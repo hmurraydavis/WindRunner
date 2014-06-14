@@ -1,9 +1,25 @@
 # where all "global" variables are stored. A way of sharing data between all the dependednt functions
 
+def getsailCurrent():
+	pass
+	
+def getstearingCurrent():
+	pass
+	
+def getposCurrent():
+	pass
+	
+def getdist_to_object():
+	pass
+
+def getcurrentHeading():
+	pass
+
 def bank(what):
-	#sail:
+	#sail servo:
 	sailDesired=25
-	sailCurrent=30
+	sailCurrent=getsailCurrent()
+	sailCurrent=30 #remove when getsailCurrent works
 
 	#stearing servo:
 	stearingDesired=-5
@@ -14,8 +30,7 @@ def bank(what):
 	posCurrent=[240,905]
 	linstart=[237,900] #for line following
 		
-	pastDist=290 #needed????
-	currentDist=300
+	dist_to_object=300 #distance from the bot to the next object
 
 	#heading:
 	currentHeading=150
@@ -36,6 +51,8 @@ def bank(what):
 		return posCurrent
 	if what=='linstart':
 		return linstart
+	if what=='dist_to_object':
+		return dist_to_object
 
 def stearingCurrent():
 	return stearingCurrent
