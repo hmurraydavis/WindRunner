@@ -1,5 +1,6 @@
 # where all "global" variables are stored. A way of sharing data between all the dependednt functions
 
+#get most recent data:
 def getsailCurrent():
 	pass
 	
@@ -14,6 +15,10 @@ def getdist_to_object():
 
 def getcurrentHeading():
 	pass
+	
+	
+#current variables:
+sailDesired=25
 
 def bank(what):
 	#sail servo:
@@ -60,6 +65,6 @@ def stearingCurrent():
 def desiredHeading():
 	return desiredHeading
 
-def sailDesired():
-	print sailDesired
+def sailDesiredF():
+	#print sailDesired
 	return sailDesired
