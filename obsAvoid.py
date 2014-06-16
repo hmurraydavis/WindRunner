@@ -7,13 +7,9 @@ def obsAvoid():
 		print "Servo moving necessary so I don't hit a rock!"
 		stearingDesired = 30*dist_to_object/256; 
 		#sailDesired = bank.bank('sailDesired') + 1
-		sailDesired=bank.sailDesired()
+		sailDesired=bank.sailDesiredF()
 		print 'desired stearing is: ' + str(stearingDesired) + ' degrees'
 		print 'desired sail is: ' + str(sailDesired) + ' degrees'
 		return (stearingDesired, sailDesired)
 
-
-
-
-
-obsAvoid()
+#obsAvoid()
