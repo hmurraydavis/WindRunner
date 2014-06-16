@@ -17,6 +17,4 @@ def mtnHeading():
 	print 'the desired stearing angle is: ' + str(desiredStearing)
 	return desiredStearing
 
-
-
-mtnHeading()
+#mtnHeading()
