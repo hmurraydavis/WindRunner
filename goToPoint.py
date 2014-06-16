@@ -1,15 +1,15 @@
+import bank
+import math
+
 def slope(p2,p1):
 	#gives the slope of the line to be followed
 	#tested to work 12:45 PM, 6/11/14
-	import bank
 	m=float(p2[1]-p1[1])/float(p2[0]-p1[0])
 	#print 'Slope is: ' + str(m)
 	return m
 
 def headingToPoint():
 	#gives the heading (angle in degrees from the +x axis) of the line to be followed
-	import bank
-	import math
 
 	posCurrent=bank.bank('posCurrent') #robot's current position
 	posDesired=bank.bank('posDesired') #waypoint going toward
@@ -36,7 +36,6 @@ def headingToPoint():
 	return angle
 
 def goToPoint():
-	import bank
 
 	currentHeading=bank.bank('currentHeading')
 	headingtoPoint=headingToPoint()
@@ -47,4 +46,4 @@ def goToPoint():
 	print 'the desire heading is:'+str(desiredHeading)
 	return desiredHeading
 
-goToPoint()
+#goToPoint()
