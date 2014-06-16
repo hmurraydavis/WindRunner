@@ -71,11 +71,11 @@ def followLine():
 		print 'Bot above and heading away from line to be followed'
 		headDesired=((lineheading-botheading)/2)+lineheading
 
-	if (bot_posVlin=='below') & (botheading<lineheading):
+	if (bot_posVlin=='below') & (botheading>lineheading):
 		print 'Bot below and heading away from line to be followed'
 		headDesired=((lineheading-botheading)/2)+lineheading
 
-	if (bot_posVlin=='below') & (botheading>lineheading):
+	if (bot_posVlin=='below') & (botheading<lineheading):
 		print 'Bot below and heading toward from line to be followed'
 		headDesired=lineheading-math.fabs((lineheading-botheading)/2)
 
@@ -88,7 +88,7 @@ def followLine():
 	print 'The desired heading for the bot is:' + str(headDesired)
 
 
-followLine()
+#followLine()
 #above_below_on_line()
 #slope()
 #heading_line()
