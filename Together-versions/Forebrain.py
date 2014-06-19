@@ -5,6 +5,7 @@ class Forebrain:
 	
 	## sail setting!
 	def setSails():
+		# '''Sets the sails to the correct location for the wind data coming in. '''
 		currentWindHeading=bank.bank('currentWindHeading')
 		currentHeading=bank.bank('currentHeading')
 		print 'current wind heading is: ', currentWindHeading
@@ -32,14 +33,14 @@ class Forebrain:
 	
 	## Going to ppoints!
 	def slope(p2,p1):
-		#gives the slope of the line to be followed
-		#tested to work 12:45 PM, 6/11/14
+		# '''gives the slope of the line to be followed
+		#tested to work 12:45 PM, 6/11/14 '''
 		m=float(p2[1]-p1[1])/float(p2[0]-p1[0])
 		#print 'Slope is: ' + str(m)
 		return m
 
 	def headingToPoint():
-		#gives the heading (angle in degrees from the +x axis) of the line to be followed
+		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
 
 		posCurrent=bank.bank('posCurrent') #robot's current position
 		posDesired=bank.bank('posDesired') #waypoint going toward
@@ -66,6 +67,7 @@ class Forebrain:
 		return angle
 
 	def goToPoint():
+		# '''outputs the necessary, global heading in order to go toward a point'''
 
 		currentHeading=bank.bank('currentHeading')
 		headingtoPoint=headingToPoint()
@@ -79,17 +81,16 @@ class Forebrain:
 		
 	## Following lines!
 	def slope(posDesired,linstart):
-		#gives the slope of the line to be followed
-		#tested to work 12:45 PM, 6/11/14
+		# '''gives the slope of the line to be followed
+		#tested to work 12:45 PM, 6/11/14'''
 		import bank
 		m=float(posDesired[1]-linstart[1])/float(posDesired[0]-linstart[0])
 		#print 'Slope is: ' + str(m)
 		return m
 
 	def heading_line():
-		#gives the heading (angle in degrees from the +x axis) of the line to be followed
-		import bank
-		import math
+		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
+
 		linstart=bank.bank('linstart')
 		posDesired=bank.bank('posDesired')
 		m=slope(posDesired,linstart)
@@ -116,10 +117,10 @@ class Forebrain:
 
 
 	def above_below_on_line():
-		# gives whether the bot is above, below, or on the line it should be following.
+		# '''gives whether the bot is above, below, or on the line it should be following.
 		#tested to work at 13:14 on 6/11/14
-		# Based on: http://math.stackexchange.com/questions/324589/detecting-whether-a-point-is-above-or-below-a-slope
-		import bank
+		# Based on: http://math.stackexchange.com/questions/324589/detecting-whether-a-point-is-above-or-below-a-slope'''
+
 		posCurrent=bank.bank('posCurrent')
 		posDesired=bank.bank('posDesired')
 		linstart=bank.bank('linstart')
@@ -138,41 +139,43 @@ class Forebrain:
 	
 
 	def followLine():
-		import bank
-		import math
-	
+		# '''Outputs the necessary, global heading for the robot to follow a line with specified endpoints'''
+		
 		bot_posVlin=above_below_on_line()
 		lineheading=heading_line()
 		botheading=bank.bank('currentHeading')
 		print 'Line heading: '+str(lineheading)
 		print 'Bot heading: '+str(botheading)
-	
+		
+		#check through possible cases and assign the correct, desired, global heading accordingly
 		if (bot_posVlin=='above') & (botheading>lineheading): #above line and heading away from it.
 			print 'Bot above and heading away from line to be followed'
 			headDesired=((lineheading-botheading)/2)+lineheading
 
-		if (bot_posVlin=='below') & (botheading>lineheading):
+		if (bot_posVlin=='below') & (botheading>lineheading): #below line and heading toward it.
 			print 'Bot below and heading away from line to be followed'
 			headDesired=((lineheading-botheading)/2)+lineheading
 
-		if (bot_posVlin=='below') & (botheading<lineheading):
+		if (bot_posVlin=='below') & (botheading<lineheading): #below line and heading away from it. 
 			print 'Bot below and heading toward from line to be followed'
 			headDesired=lineheading-math.fabs((lineheading-botheading)/2)
 
-		if (bot_posVlin=='above') & (botheading<lineheading):
+		if (bot_posVlin=='above') & (botheading<lineheading): #above line and heading toward it.
 			print 'Bot above and heading toward from line to be followed'
 			headDesired=lineheading-math.fabs((lineheading-botheading)/2)
-		if bot_posVlin=='on':
+		if bot_posVlin=='on': #on line! :)
 			print 'Bot is on the line to be followed!'
 			headDesired=lineheading
+			
+			
 		print 'The desired heading for the bot is:' + str(headDesired)
+		return headDesired
 
 
 
 	## Maintaining heading!
 	def mtnHeading():
-		# Keeps the robot on a desired heading 
-		import bank
+		# '''Keeps the robot on a desired heading. Output: desired, global heading'''
 		currentHeading=bank.bank('currentHeading')
 		desiredHeading=bank.bank('desiredHeading')
 		print 'Current heading: ' + str(currentHeading)
@@ -192,8 +195,7 @@ class Forebrain:
 		
 	## Avoid obstacles!
 	def obsAvoid():
-		#works with PIR sensor to avoid obstacles. Essentially integral control.
-		import bank
+		# '''works with IR sensor to avoid obstacles. Essentially integral control.'''
 	
 		dist_to_object=bank.bank('dist_to_object') #distance to object from PIR/Sharp sensor
 		if  dist_to_object >50:
