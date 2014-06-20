@@ -4,7 +4,7 @@ class Midbrain:
 	
 	
 	## limit sail servo so it doesn't go out of mechanical bounds:
-	def limitSailServo():
+	def limitSailServo(self):
 		sailDesired=bank.bank('sailDesired')
 		if sailDesired >180:
 			sailDesired=180
@@ -16,7 +16,7 @@ class Midbrain:
 	
 	
 	## limit stearing servo so it doesn't go out of mechanical bounds:
-	def limitStearingServo():
+	def limitStearingServo(self):
 		sailDesired=bank.bank('sailDesired')
 		if sailDesired >90:
 			sailDesired=90
@@ -27,7 +27,7 @@ class Midbrain:
 		
 		
 	## Set sails to servo readable position: AKA: get from boat heading to servo position
-	def sailDesToServoDes():
+	def sailDesToServoDes(self):
 		#midbrain
 		#converts from the sail theta to the equivelent theta for the sail winch
 		import bank
@@ -39,7 +39,7 @@ class Midbrain:
 		
 	## set stearing to readable servo heading: AKA: convert from global coordinate heading into servo set angle.
 	
-	def stearingDestoStrSvoDes():
+	def stearingDestoStrSvoDes(self):
 		stearingDesired=bank.bank('stearingDesired')
 		currentHeading=bank.bank('currentHeading')
 	

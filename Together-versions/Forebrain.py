@@ -1,10 +1,10 @@
-class Forebrain:
-	import math
-	import bank #delete when final
-	
+import math
+import bank #delete when final
+
+class Forebrain:	
 	
 	## sail setting!
-	def setSails():
+	def setSails(self):
 		# '''Sets the sails to the correct location for the wind data coming in. '''
 		currentWindHeading=bank.bank('currentWindHeading')
 		currentHeading=bank.bank('currentHeading')
@@ -32,19 +32,19 @@ class Forebrain:
 		
 	
 	## Going to ppoints!
-	def slope(p2,p1):
+	def slope(self,p2,p1):
 		# '''gives the slope of the line to be followed
 		#tested to work 12:45 PM, 6/11/14 '''
 		m=float(p2[1]-p1[1])/float(p2[0]-p1[0])
 		#print 'Slope is: ' + str(m)
 		return m
 
-	def headingToPoint():
+	def headingToPoint(self):
 		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
 
 		posCurrent=bank.bank('posCurrent') #robot's current position
 		posDesired=bank.bank('posDesired') #waypoint going toward
-		m=slope(posDesired,posCurrent)
+		m=self.slope(posDesired,posCurrent)
 		angle=math.degrees(math.atan(m/1))
 
 		xcheck=(posDesired[0]-posCurrent[0])>0#if true, in I or IV
@@ -66,7 +66,7 @@ class Forebrain:
 
 		return angle
 
-	def goToPoint():
+	def goToPoint(self):
 		# '''outputs the necessary, global heading in order to go toward a point'''
 
 		currentHeading=bank.bank('currentHeading')
@@ -80,20 +80,19 @@ class Forebrain:
 		
 		
 	## Following lines!
-	def slope(posDesired,linstart):
+	#def slope(self,posDesired,linstart):
 		# '''gives the slope of the line to be followed
 		#tested to work 12:45 PM, 6/11/14'''
-		import bank
-		m=float(posDesired[1]-linstart[1])/float(posDesired[0]-linstart[0])
+	#	m=float(posDesired[1]-linstart[1])/float(posDesired[0]-linstart[0])
 		#print 'Slope is: ' + str(m)
-		return m
+	#	return m
 
-	def heading_line():
+	def heading_line(self):
 		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
 
 		linstart=bank.bank('linstart')
 		posDesired=bank.bank('posDesired')
-		m=slope(posDesired,linstart)
+		m=self.slope(posDesired,linstart)
 		angle=math.degrees(math.atan(m/1))
 
 		xcheck=(posDesired[0]-linstart[0])>0#if true, in I or IV
@@ -116,7 +115,7 @@ class Forebrain:
 		return angle
 
 
-	def above_below_on_line():
+	def above_below_on_line(self):
 		# '''gives whether the bot is above, below, or on the line it should be following.
 		#tested to work at 13:14 on 6/11/14
 		# Based on: http://math.stackexchange.com/questions/324589/detecting-whether-a-point-is-above-or-below-a-slope'''
@@ -124,7 +123,7 @@ class Forebrain:
 		posCurrent=bank.bank('posCurrent')
 		posDesired=bank.bank('posDesired')
 		linstart=bank.bank('linstart')
-		m=slope(posDesired, linstart)
+		m=self.slope(posDesired, linstart)
 		b=posDesired[1]-(m*posDesired[0])
 		check=m*posCurrent[0]+b
 		if check<posCurrent[1]:
@@ -138,11 +137,11 @@ class Forebrain:
 			return 'on'
 	
 
-	def followLine():
+	def followLine(self):
 		# '''Outputs the necessary, global heading for the robot to follow a line with specified endpoints'''
 		
-		bot_posVlin=above_below_on_line()
-		lineheading=heading_line()
+		bot_posVlin=self.above_below_on_line()
+		lineheading=self.heading_line()
 		botheading=bank.bank('currentHeading')
 		print 'Line heading: '+str(lineheading)
 		print 'Bot heading: '+str(botheading)
@@ -174,7 +173,7 @@ class Forebrain:
 
 
 	## Maintaining heading!
-	def mtnHeading():
+	def mtnHeading(self):
 		# '''Keeps the robot on a desired heading. Output: desired, global heading'''
 		currentHeading=bank.bank('currentHeading')
 		desiredHeading=bank.bank('desiredHeading')
@@ -194,7 +193,7 @@ class Forebrain:
 		
 		
 	## Avoid obstacles!
-	def obsAvoid():
+	def obsAvoid(self):
 		# '''works with IR sensor to avoid obstacles. Essentially integral control.'''
 	
 		dist_to_object=bank.bank('dist_to_object') #distance to object from PIR/Sharp sensor
@@ -207,4 +206,13 @@ class Forebrain:
 			print 'desired sail is: ' + str(sailDesired) + ' degrees'
 			return (stearingDesired, sailDesired)
 	
+if __name__=='__main__':
+	FB=Forebrain()
+	FB.obsAvoid()
+	FB.mtnHeading()
+	FB.followLine()
+	FB.above_below_on_line()
+	FB.heading_line()
+	FB.headingToPoint()
+	FB.setSails()
 	
