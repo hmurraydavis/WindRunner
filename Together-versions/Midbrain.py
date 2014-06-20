@@ -1,7 +1,7 @@
+import math
+import bank
+
 class Midbrain:
-	import math
-	import bank
-	
 	
 	## limit sail servo so it doesn't go out of mechanical bounds:
 	def limitSailServo(self):
@@ -17,13 +17,13 @@ class Midbrain:
 	
 	## limit stearing servo so it doesn't go out of mechanical bounds:
 	def limitStearingServo(self):
-		sailDesired=bank.bank('sailDesired')
-		if sailDesired >90:
-			sailDesired=90
+		stearingDesired=bank.bank('stearingDesired')
+		if stearingDesired >90:
+			stearingDesired=90
 		if stearingDesired<0:
-			sailDesired=0
+			stearingDesired=0
 		
-		print "The sail angle sent to the servo is:", sailDesired
+		print "The sail angle sent to the servo is:", stearingDesired
 		
 		
 	## Set sails to servo readable position: AKA: get from boat heading to servo position
@@ -54,7 +54,12 @@ class Midbrain:
 		
 		print 'desired servo stearing angle is: ',stearingServoDesired
 		return stearingServoDesired
-
-
+		
+MB=Midbrain()
+if __name__=='__main__':
+	MB.stearingDestoStrSvoDes()
+	MB.sailDesToServoDes()
+	MB.limitStearingServo()
+	MB.limitSailServo()
 		
 	
