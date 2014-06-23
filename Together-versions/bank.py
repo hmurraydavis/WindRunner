@@ -38,7 +38,7 @@ def bank(what):
 	#position:
 	posDesired=[200,950]
 	posCurrent=[240,905]
-	posPast
+	posPast=[240,905]
 	linstart=[237,900] #for line following
 	
 	dist_to_object=300 #distance from the bot to the next object

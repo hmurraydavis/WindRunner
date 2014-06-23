@@ -23,7 +23,7 @@ class Hindbrain:
 		#data=self.GPS.readline()
 		
 		#test data set: 
-		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*64'
+		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74'
 		ckStng=data[1:data[14].find('*')-2]
 
 		ckSum=0
@@ -36,6 +36,8 @@ class Hindbrain:
 		
 		if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
 			print 'Check Sum Error from the GPS! :('
+			positionUse=bank.bank('posPast')
+			return positionUse
 			
 		else: #if the GPS string isn't corrupted, use it:
 			print 'Good GPS data! :)'					
