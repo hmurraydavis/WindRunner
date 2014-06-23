@@ -2,8 +2,8 @@
 import serial
 
 class Hindbrain:
-	def __init__(self):
-		self.GPS=serial.Serial ('/dev/ttyO1')
+	#def __init__(self):
+	#	self.GPS=serial.Serial ('/dev/ttyO1')
 	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
@@ -19,9 +19,27 @@ class Hindbrain:
 		
 	def readPosition(self):
 		# '''Reads the current GPS position from the GPS chip.'''
-		print self.GPS.readline()
 		
-		pass
+		#data=self.GPS.readline()
+		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*79'
+		data=data.split(',')
+		#print data
+		latitude=data[2]
+		print 'latitude: ',latitude
+		longitude=data[4]
+		#print 'degrees: ', latitude[:2]
+		#print 'minuites: ',latitude[2:]
+		latitude=int(latitude[:2])+(float(latitude[2:])/60)
+		if data[3]=='S':
+			latitude=latitude*-1
+		longitude=int(longitude[:2])+(float(longitude[2:])/60)
+		if data[5]=='W':
+			longitude=longitude*-1
+		print 'Processed latitude:',latitude
+		print 'Processed longitude:',longitude
+		
+		
+		
 		
 	def readHeading(self):
 		# '''Read the current, global heading of the robot from the compass'''
