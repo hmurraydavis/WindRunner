@@ -1,5 +1,6 @@
-#import bank
+import bank
 import serial
+import binascii
 
 class Hindbrain:
 	#def __init__(self):
@@ -19,24 +20,42 @@ class Hindbrain:
 		
 	def readPosition(self):
 		# '''Reads the current GPS position from the GPS chip.'''
-		
 		#data=self.GPS.readline()
+		
+		#test data set: 
 		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*79'
+		ckStng=data[1:data[14].find('*')-2]
+
+		ckSum=0
+		for i in ckStng:
+			ckSum = ckSum ^ ord(i)
+		#print 'Check sum caluclated: hex:', hex(ckSum), 'dec:', ckSum
 		data=data.split(',')
-		#print data
-		latitude=data[2]
-		print 'latitude: ',latitude
-		longitude=data[4]
-		#print 'degrees: ', latitude[:2]
-		#print 'minuites: ',latitude[2:]
-		latitude=int(latitude[:2])+(float(latitude[2:])/60)
-		if data[3]=='S':
-			latitude=latitude*-1
-		longitude=int(longitude[:2])+(float(longitude[2:])/60)
-		if data[5]=='W':
-			longitude=longitude*-1
-		print 'Processed latitude:',latitude
-		print 'Processed longitude:',longitude
+		ckSumSat=data[14].split('*')
+		
+		if ckSum != 'Ox'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
+			print 'Check Sum Error from the GPS! :('
+			
+		else: #if the GPS string isn't corrupted, use it:
+			print 'Good GPS data! :)'					
+			if data[6]==0:
+				print 'No GPS Lock! :('
+			if data[6]==1:
+				print 'GPS fix!'
+			if data[6]==2:
+				print 'DGPS fix!'
+				
+			latitude=data[2]
+			longitude=data[4]
+			latitude=int(latitude[:2])+(float(latitude[2:])/60)
+			if data[3]=='S': #convert to negative if on the negative side of the earth
+				latitude=latitude*-1
+			longitude=int(longitude[:2])+(float(longitude[2:])/60)
+			if data[5]=='W': #convert to negative if on the negative side of the world
+				longitude=longitude*-1
+			print 'Processed latitude:',latitude
+			print 'Processed longitude:',longitude
+			return [latitude,longitude]
 		
 		
 		
