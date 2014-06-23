@@ -1,7 +1,10 @@
-import bank
+#import bank
+import serial
 
 class Hindbrain:
-
+	def __init__(self):
+		self.GPS=serial.Serial ('/dev/ttyO1')
+	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
 		pass
@@ -16,6 +19,8 @@ class Hindbrain:
 		
 	def readPosition(self):
 		# '''Reads the current GPS position from the GPS chip.'''
+		print self.GPS.readline()
+		
 		pass
 		
 	def readHeading(self):
@@ -37,3 +42,8 @@ class Hindbrain:
 	def dontFallOver(self):
 		# '''Called by readTilt if the bot tilts to the point of flipping over. Will let the sail servo all the way out.'''
 		pass
+		
+if __name__=='__main__':
+	HB=Hindbrain()
+	HB.readPosition()
+		
