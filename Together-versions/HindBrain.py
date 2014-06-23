@@ -23,7 +23,7 @@ class Hindbrain:
 		#data=self.GPS.readline()
 		
 		#test data set: 
-		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*79'
+		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*64'
 		ckStng=data[1:data[14].find('*')-2]
 
 		ckSum=0
@@ -32,14 +32,18 @@ class Hindbrain:
 		#print 'Check sum caluclated: hex:', hex(ckSum), 'dec:', ckSum
 		data=data.split(',')
 		ckSumSat=data[14].split('*')
+
 		
-		if ckSum != 'Ox'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
+		if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
 			print 'Check Sum Error from the GPS! :('
 			
 		else: #if the GPS string isn't corrupted, use it:
 			print 'Good GPS data! :)'					
-			if data[6]==0:
+			if data[6]==0: #if there isn't a GPS lock, assume the robot hasn't moved
 				print 'No GPS Lock! :('
+				positionUse=bank.bank('posPast')
+				return positionUse
+				
 			if data[6]==1:
 				print 'GPS fix!'
 			if data[6]==2:
