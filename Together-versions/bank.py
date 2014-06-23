@@ -38,6 +38,7 @@ def bank(what):
 	#position:
 	posDesired=[200,950]
 	posCurrent=[240,905]
+	posPast
 	linstart=[237,900] #for line following
 	
 	dist_to_object=300 #distance from the bot to the next object
@@ -70,6 +71,8 @@ def bank(what):
 		return stearingDesired
 	if what=='currentWindHeading':
 		return currentWindHeading
+	if what=='posPast':
+		return posPast
 
 def stearingCurrent():
 	return stearingCurrent
