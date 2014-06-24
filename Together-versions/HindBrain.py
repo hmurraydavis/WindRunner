@@ -6,13 +6,18 @@ class Hindbrain:
 	#def __init__(self):
 	#	self.GPS=serial.Serial ('/dev/ttyO1')
 	
+		#PWM Stearing servo.
+		#Based on: http://www.gigamegablog.com/2012/03/16/beaglebone-coding-101-buttons-and-pwm/
+		stearServo=open('/sys/devices/platform/omap/ehrpwm.1/','w') #open the ram file for the stearing servo: PWM--1
+	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
 		pass
 		
 	def moveStearServo(self, stearServoAngle):
 		# '''Moves the stearing servo to the desired angle'''
-		pass
+		stearServo.write('stearServoAngle')
+		#don't need to close it because python wil magically close it when the module exits
 		
 	def readTilt(self):
 		# '''Read the current tild of the robot off the horizontal from the gyroscope'''
