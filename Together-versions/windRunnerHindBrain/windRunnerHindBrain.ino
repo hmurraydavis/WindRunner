@@ -41,8 +41,8 @@ void setup() {
     Serial.begin(9600);
     
     //attach servos:
-    steerServo.attach(10);
-    sailServo.attach(11);
+    steerServo.attach(11);
+    sailServo.attach(9);
     steerServo.write(0);
     sailServo.write(0);
 }
