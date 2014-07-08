@@ -1,5 +1,7 @@
+#include <Wire.h>
 #include <Servo.h>
 #include <SoftwareSerial.h>
+
 
 //Declare globals:
 char current_line[8]; // allocate some space for the string
@@ -20,7 +22,16 @@ String irRead(){
     return "IR"+String(irReading);
 }
 
-String gyroscopeRead(){}
+String gyroscopeRead(){
+    Wire.beginTransmission(0x68);
+    Wire.write(68);
+    Wire.endTransmission();
+    
+    Wire.requestFrom(0x68, 1);
+    int byteG=Wire.read();
+    Serial.print("Gyroscope reading: ");
+    Serial.println(byteG);
+}
 
 String windRead(){}
 
