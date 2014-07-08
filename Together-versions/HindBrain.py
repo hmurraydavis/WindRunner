@@ -25,16 +25,37 @@ class Hindbrain:
 			print 'Sail winch received set angle. :)'
 		if False==check:
 			print 'Error--Sail winch not receiving set angle. :('
+			#raise IOError('Sail winch not receiving set angle')
 		pass
 		
 	def moveStearServo(self, stearServoAngle):
 		# '''Moves the stearing servo to the desired angle'''
-		self.arduino.write('s%i\n' %stearServoAngle)
-		print 's%i\n' %stearServoAngle
+		send='s%i\n' %stearServoAngle
+		self.arduino.write(send)
+		print send
+		
+		echo=self.arduino.readline()
+		check = echo == (':)'+send)
+		if True==check:
+			print 'Steer servo received set angle. :)'
+		if False==check:
+			print 'Error--Steer servo not receiving set angle. :('
+			#raise IOError('Steer servo not receiving set angle')
 		pass
 		
 	def readTilt(self):
 		# '''Read the current tild of the robot off the horizontal from the gyroscope'''
+		send='g'
+		self.arduino.write(send)
+		print send
+		
+		echo=self.arduino.readline()
+		check = echo.startswith(send)
+		if True==check:
+			print 'Tilt sensor read from. :)'
+		if False==check:
+			print 'Error--tilt sensor not reading. :('
+			#raise IOError('tilt sensor not reading.')
 		pass
 		
 	def readPosition(self):
@@ -108,4 +129,5 @@ if __name__=='__main__':
 	HB.readPosition()
 	HB.moveSailServos(40)
 	HB.moveStearServo(50)
+	HB.readTilt()
 		
