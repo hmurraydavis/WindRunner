@@ -7,7 +7,9 @@ class Hindbrain:
 		#self.GPS=serial.Serial ('/dev/ttyO1') #uncomment when on BB
 		
 		#Arduino serial connection
-		self.arduino=serial.Serial('/dev/ttyACM0')
+		#self.arduino=serial.Serial('/dev/ttyACM0') #uncomment when arduino is connected
+		
+		pass # comment when GPS or Arduino is connected
 	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
@@ -16,7 +18,7 @@ class Hindbrain:
 		
 	def moveStearServo(self, stearServoAngle):
 		# '''Moves the stearing servo to the desired angle'''
-		
+		pass
 		
 	def readTilt(self):
 		# '''Read the current tild of the robot off the horizontal from the gyroscope'''
