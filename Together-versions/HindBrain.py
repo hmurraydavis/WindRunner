@@ -3,21 +3,20 @@ import serial
 import binascii
 
 class Hindbrain:
-	#def __init__(self):
-	#	self.GPS=serial.Serial ('/dev/ttyO1')
-	
-		#PWM Stearing servo.
-		#Based on: http://www.gigamegablog.com/2012/03/16/beaglebone-coding-101-buttons-and-pwm/
-		stearServo=open('/sys/devices/platform/omap/ehrpwm.1/','w') #open the ram file for the stearing servo: PWM--1
+	def __init__(self):
+		#self.GPS=serial.Serial ('/dev/ttyO1') #uncomment when on BB
+		
+		#Arduino serial connection
+		self.arduino=serial.Serial('/dev/ttyACM0')
 	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
+		
 		pass
 		
 	def moveStearServo(self, stearServoAngle):
 		# '''Moves the stearing servo to the desired angle'''
-		stearServo.write('stearServoAngle')
-		#don't need to close it because python wil magically close it when the module exits
+		
 		
 	def readTilt(self):
 		# '''Read the current tild of the robot off the horizontal from the gyroscope'''
@@ -25,10 +24,10 @@ class Hindbrain:
 		
 	def readPosition(self):
 		# '''Reads the current GPS position from the GPS chip.'''
-		#data=self.GPS.readline()
+		#data=self.GPS.readline() #uncomment when on BB
 		
 		#test data set: 
-		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74'
+		data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74' #comment out when on BB
 		ckStng=data[1:data[14].find('*')-2]
 
 		ckSum=0
@@ -66,9 +65,7 @@ class Hindbrain:
 				longitude=longitude*-1
 			print 'Processed latitude:',latitude
 			print 'Processed longitude:',longitude
-			return [latitude,longitude]
-		
-		
+			return [latitude,longitude]	
 		
 		
 	def readHeading(self):
