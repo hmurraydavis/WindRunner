@@ -100,6 +100,7 @@ void loop() {
     read_line(current_line);
     Serial.println("afta mistery code");
     int amount;
+    String ir_reading;
     Serial.println("in loop!");
     switch (current_line[0]){
         case 'c': // compass
@@ -108,7 +109,7 @@ void loop() {
           break;
         case 'i': // infrared
           Serial.println("Got an i, reading from IR range 1");
-          irRead();
+          ir_reading = irRead();
           break;
         case 'g': // gyro
           Serial.println("Got a g, reading from gyroscope");
