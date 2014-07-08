@@ -23,14 +23,23 @@ String irRead(){
 }
 
 String gyroscopeRead(){
-    Wire.beginTransmission(0x68);
-    Wire.write(68);
-    Wire.endTransmission();
     
-    Wire.requestFrom(0x68, 1);
-    int byteG=Wire.read();
-    Serial.print("Gyroscope reading: ");
-    Serial.println(byteG);
+    for (int a=0;a<256;a++){
+        Wire.beginTransmission(a);
+        Wire.write(0x44);
+        Wire.endTransmission();
+        
+        Wire.requestFrom(a, 1);
+        int byteG=Wire.read();
+        
+        if (byteG!=-1) {
+            Serial.println("SUCCESS WITH I2C!!!!!!!!!!!!!");
+            Serial.print("a was: ");
+            Serial.println(a);
+        } 
+    }
+    //Serial.print("Gyroscope reading: ");
+    //Serial.println(byteG);
 }
 
 String windRead(){}
@@ -56,6 +65,8 @@ void setup() {
     sailServo.attach(9);
     steerServo.write(0);
     sailServo.write(0);
+    
+    Serial.println("Ready when you are!");
 }
 
 void read_line(char *line) {
@@ -85,8 +96,11 @@ int get_amount(char *line) {
 }
 
 void loop() {
+    Serial.println("before mystery code");
     read_line(current_line);
+    Serial.println("afta mistery code");
     int amount;
+    Serial.println("in loop!");
     switch (current_line[0]){
         case 'c': // compass
           Serial.println("Got a c, reading from compass");
