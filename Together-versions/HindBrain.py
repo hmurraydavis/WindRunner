@@ -3,21 +3,34 @@ import serial
 import binascii
 
 class Hindbrain:
+	
 	def __init__(self):
 		#self.GPS=serial.Serial ('/dev/ttyO1') #uncomment when on BB
 		
 		#Arduino serial connection
-		#self.arduino=serial.Serial('/dev/ttyACM0') #uncomment when arduino is connected
+		self.arduino=serial.Serial('/dev/ttyACM0') #uncomment when arduino is connected
 		
+		self.count=0
 		pass # comment when GPS or Arduino is connected
 	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
+		send = 'w{angle}\n'.format(angle=sailServoAngle)
+		self.arduino.write(send)
+		print send
 		
+		echo=self.arduino.readline()
+		check = echo == (':)'+send)
+		if True==check:
+			print 'Sail winch received set angle. :)'
+		if False==check:
+			print 'Error--Sail winch not receiving set angle. :('
 		pass
 		
 	def moveStearServo(self, stearServoAngle):
 		# '''Moves the stearing servo to the desired angle'''
+		self.arduino.write('s%i\n' %stearServoAngle)
+		print 's%i\n' %stearServoAngle
 		pass
 		
 	def readTilt(self):
@@ -93,4 +106,6 @@ class Hindbrain:
 if __name__=='__main__':
 	HB=Hindbrain()
 	HB.readPosition()
+	HB.moveSailServos(40)
+	HB.moveStearServo(50)
 		
