@@ -1,7 +1,11 @@
 import math
 import bank
+from HindBrain import Hindbrain
 
 class Midbrain:
+	
+	def __init__(self):
+		self.hindbrain=Hindbrain()
 	
 	## limit sail servo so it doesn't go out of mechanical bounds:
 	def limitSailServo(self):
@@ -41,7 +45,7 @@ class Midbrain:
 	
 	def stearingDestoStrSvoDes(self):
 		stearingDesired=bank.bank('stearingDesired')
-		currentHeading=bank.bank('currentHeading')
+		currentHeading = self.hindbrain.readHeading()
 	
 		print 'desired stearing is: ', stearingDesired
 		print 'current heading is: ',currentHeading
@@ -55,11 +59,27 @@ class Midbrain:
 		print 'desired servo stearing angle is: ',stearingServoDesired
 		return stearingServoDesired
 		
+	def readWindDirecrion(self):
+		'''Reads the current wind direction through the hindbrain's method'''
+		return self.hindbrain.readWindDirecrion()
+		
+	def readHeading(self):
+		'''Reads the current robot heading from the compas via the hindbrain's designated method'''
+		return self.hindbrain.readHeading()
+		
+	def readPosition(self):
+		'''reads the current GPS position off the robot via the hindbrain's method'''
+		return self.hindbrain.readPosition()
+		
+	def readIR1(self):
+		'''Reads the current distance from an object from the IR range sensor 1 via the hindbrain's method'''
+		return self.hindbrain.readObstacle1()
+		
 MB=Midbrain()
 if __name__=='__main__':
 	MB.stearingDestoStrSvoDes()
 	MB.sailDesToServoDes()
 	MB.limitStearingServo()
 	MB.limitSailServo()
-		
+	MB.readWindDirecrion()
 	

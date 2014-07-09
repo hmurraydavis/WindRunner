@@ -56,6 +56,7 @@ class Hindbrain:
 		if False==check:
 			print 'Error--tilt sensor not reading. :('
 			#raise IOError('tilt sensor not reading.')
+		return 45 #pretend tilt
 		pass
 		
 	def readPosition(self):
@@ -74,10 +75,13 @@ class Hindbrain:
 		ckSumSat=data[14].split('*')
 
 		
-		if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
-			print 'Check Sum Error from the GPS! :('
-			positionUse=bank.bank('posPast')
-			return positionUse
+		#if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
+			#print 'Check Sum Error from the GPS! :('
+			#positionUse=bank.bank('posPast')
+			#return positionUse
+			
+		if False: #TODO: uncomment above checksum stuff, delete this placeholder
+			pass 
 			
 		else: #if the GPS string isn't corrupted, use it:
 			print 'Good GPS data! :)'					
@@ -117,17 +121,42 @@ class Hindbrain:
 			print 'Compass read from. :)'
 		if False==check:
 			print 'Error--compass not reading. :('
-			#raise IOError('Compass not reading.')
+			#raise IOError('Compass not reading.')	
+		return 45 #pretend value for now. #TODO get returned arduino value	
 		pass
 		
-		pass
-		
-	def readObstacle(self):
+	def readObstacle1(self):
 		# '''Read from the standard IR sensor if there is an obstacle in front of the robot.'''
+		
+		send='i\n'
+		self.arduino.write(send)
+		print send
+		
+		echo=self.arduino.readline()		
+		check = echo.startswith(send)
+		if True==check:
+			print 'IR Range 1 read from. :)'
+		if False==check:
+			print 'Error--IR Range 1 not reading. :('
+			#raise IOError('IR Range 1 not reading.')	
+		return 100 #TODO return actual dist to obstacle
 		pass
 		
 	def readWindDirecrion(self):
 		# ''' Read in the current, global, apparent wind direction from the wind sensor (compass)'''
+		
+		send='d\n'
+		self.arduino.write(send)
+		print send
+		
+		echo=self.arduino.readline()		
+		check = echo.startswith(send)
+		if True==check:
+			print 'Wind direction read from. :)'
+		if False==check:
+			print 'Error--Wind direction not reading. :('
+			#raise IOError('IR Range 1 not reading.')
+		return 60 #TODO return actual wind direction from arduino
 		pass
 		
 	def dontHitThat(self):
@@ -145,4 +174,5 @@ if __name__=='__main__':
 	HB.moveStearServo(50)
 	HB.readTilt()
 	HB.readHeading()
-		
+	HB.readObstacle1()
+	HB.readWindDirecrion()
