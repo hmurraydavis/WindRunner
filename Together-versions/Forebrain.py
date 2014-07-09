@@ -1,13 +1,19 @@
 import math
-import bank #delete when final
+#import bank #delete when final
+from Midbrain import Midbrain
 
 class Forebrain:	
+	def __init__(self):
+		self.midbrain=Midbrain()
+		
+	def test1(self):
+		self.midbrain.limitSailServo()
 	
 	## sail setting!
 	def setSails(self):
 		# '''Sets the sails to the correct location for the wind data coming in. '''
-		currentWindHeading=bank.bank('currentWindHeading')
-		currentHeading=bank.bank('currentHeading')
+		currentWindHeading = self.midbrain.readWindDirecrion()
+		currentHeading = self.midbrain.readHeading()
 		print 'current wind heading is: ', currentWindHeading
 		print 'Current bot heading is: ', currentHeading
 	
@@ -19,8 +25,9 @@ class Forebrain:
 		if windAngle<0:
 			print 'Error: negative wind angle!'
 			sailDesired=40
-		if windAngle<45:
+		elif windAngle<45:
 			print 'Bot is in irons!'
+			sailDesired=40
 			#outOfIrons()
 		if (windAngle<180) & (windAngle>45):
 			sailDesired=(.75*windAngle)-30
@@ -39,11 +46,10 @@ class Forebrain:
 		#print 'Slope is: ' + str(m)
 		return m
 
-	def headingToPoint(self):
+	def headingToPoint(self,posDesired):
 		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
 
-		posCurrent=bank.bank('posCurrent') #robot's current position
-		posDesired=bank.bank('posDesired') #waypoint going toward
+		posCurrent = self.midbrain.readPosition() #robot's current position
 		m=self.slope(posDesired,posCurrent)
 		angle=math.degrees(math.atan(m/1))
 
@@ -69,7 +75,7 @@ class Forebrain:
 	def goToPoint(self):
 		# '''outputs the necessary, global heading in order to go toward a point'''
 
-		currentHeading=bank.bank('currentHeading')
+		currentHeading = self.midbrain.readHeading()
 		headingtoPoint=headingToPoint()
 		print 'currentHeading' +str(currentHeading)
 		print 'headingtoPoint' +str(headingtoPoint)
@@ -87,11 +93,9 @@ class Forebrain:
 		#print 'Slope is: ' + str(m)
 	#	return m
 
-	def heading_line(self):
+	def heading_line(self,linstart,posDesired):
 		#'''gives the heading (angle in degrees from the +x axis) of the line to be followed'''
 
-		linstart=bank.bank('linstart')
-		posDesired=bank.bank('posDesired')
 		m=self.slope(posDesired,linstart)
 		angle=math.degrees(math.atan(m/1))
 
@@ -115,14 +119,12 @@ class Forebrain:
 		return angle
 
 
-	def above_below_on_line(self):
+	def above_below_on_line(self,posCurrent,linstart,posDesired):
 		# '''gives whether the bot is above, below, or on the line it should be following.
 		#tested to work at 13:14 on 6/11/14
 		# Based on: http://math.stackexchange.com/questions/324589/detecting-whether-a-point-is-above-or-below-a-slope'''
 
-		posCurrent=bank.bank('posCurrent')
-		posDesired=bank.bank('posDesired')
-		linstart=bank.bank('linstart')
+		posCurrent = self.midbrain.readPosition()
 		m=self.slope(posDesired, linstart)
 		b=posDesired[1]-(m*posDesired[0])
 		check=m*posCurrent[0]+b
@@ -137,12 +139,12 @@ class Forebrain:
 			return 'on'
 	
 
-	def followLine(self):
+	def followLine(self,posCurrent,linstart,posDesired):
 		# '''Outputs the necessary, global heading for the robot to follow a line with specified endpoints'''
 		
-		bot_posVlin=self.above_below_on_line()
-		lineheading=self.heading_line()
-		botheading=bank.bank('currentHeading')
+		bot_posVlin=self.above_below_on_line(posCurrent,linstart,posDesired)
+		lineheading=self.heading_line(linstart,posDesired)
+		botheading = self.midbrain.readHeading()
 		print 'Line heading: '+str(lineheading)
 		print 'Bot heading: '+str(botheading)
 		
@@ -173,10 +175,10 @@ class Forebrain:
 
 
 	## Maintaining heading!
-	def mtnHeading(self):
+	def mtnHeading(self, desiredHeading):
 		# '''Keeps the robot on a desired heading. Output: desired, global heading'''
-		currentHeading=bank.bank('currentHeading')
-		desiredHeading=bank.bank('desiredHeading')
+		#currentHeading = self.midbrain.readHeading()
+		currentHeading=45; ###TODO: uncomment when the hindbrain compas sensors come in and work
 		print 'Current heading: ' + str(currentHeading)
 		print 'Desired heading:' +str(desiredHeading)
 		delta=abs((currentHeading-desiredHeading)/2)
@@ -184,9 +186,13 @@ class Forebrain:
 		if currentHeading > desiredHeading:
 			desiredStearing=currentHeading-delta
 			print 'desired greater than current'
-		if currentHeading<desiredHeading:
+		elif currentHeading<desiredHeading:
 			desiredStearing=currentHeading+delta
 			print 'current greater than desired'
+		elif currentHeading==desiredHeading:
+			desiredStearing=currentHeading
+			print 'current heading is the desired heading'
+			
 	
 		print 'the desired stearing angle is: ' + str(desiredStearing)
 		return desiredStearing
@@ -196,12 +202,11 @@ class Forebrain:
 	def obsAvoid(self):
 		# '''works with IR sensor to avoid obstacles. Essentially integral control.'''
 	
-		dist_to_object=bank.bank('dist_to_object') #distance to object from PIR/Sharp sensor
+		dist_to_object=self.midbrain.readIR1() #distance to object from PIR/Sharp sensor
 		if  dist_to_object >50:
 			print "Servo moving necessary so I don't hit a rock!"
 			stearingDesired = 30*dist_to_object/256; 
-			#sailDesired = bank.bank('sailDesired') + 1
-			sailDesired=bank.sailDesiredF()
+			sailDesired=self.setSails()
 			print 'desired stearing is: ' + str(stearingDesired) + ' degrees'
 			print 'desired sail is: ' + str(sailDesired) + ' degrees'
 			return (stearingDesired, sailDesired)
@@ -209,10 +214,12 @@ class Forebrain:
 if __name__=='__main__':
 	FB=Forebrain()
 	FB.obsAvoid()
-	FB.mtnHeading()
-	FB.followLine()
-	FB.above_below_on_line()
-	FB.heading_line()
-	FB.headingToPoint()
+	FB.mtnHeading(45)
+	FB.followLine([3,4],[1,0],[9,10]) #followLine(self,posCurrent,linstart,posDesired):
+	FB.above_below_on_line([3,4],[1,0],[9,10])
+	FB.heading_line([1,0],[9,10]) #heading_line(self,linstart,posDesired)
+	FB.headingToPoint([9,10])
 	FB.setSails()
+	#print ("test 1:")
+	#FB.test1()
 	
