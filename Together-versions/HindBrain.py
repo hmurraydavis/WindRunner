@@ -45,7 +45,7 @@ class Hindbrain:
 		
 	def readTilt(self):
 		# '''Read the current tild of the robot off the horizontal from the gyroscope'''
-		send='g'
+		send='g\n'
 		self.arduino.write(send)
 		print send
 		
@@ -106,6 +106,20 @@ class Hindbrain:
 		
 	def readHeading(self):
 		# '''Read the current, global heading of the robot from the compass'''
+				# '''Read the current tild of the robot off the horizontal from the gyroscope'''
+		send='c\n'
+		self.arduino.write(send)
+		print send
+		
+		echo=self.arduino.readline()		
+		check = echo.startswith(send)
+		if True==check:
+			print 'Compass read from. :)'
+		if False==check:
+			print 'Error--compass not reading. :('
+			#raise IOError('Compass not reading.')
+		pass
+		
 		pass
 		
 	def readObstacle(self):
@@ -130,4 +144,5 @@ if __name__=='__main__':
 	HB.moveSailServos(40)
 	HB.moveStearServo(50)
 	HB.readTilt()
+	HB.readHeading()
 		
