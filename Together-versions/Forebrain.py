@@ -139,32 +139,34 @@ class Forebrain:
 			return 'on'
 	
 
-	def followLine(self,posCurrent,linstart,posDesired):
+	def followLine(self,linstart,posDesired):
 		# '''Outputs the necessary, global heading for the robot to follow a line with specified endpoints'''
 		
+		posCurrent=self.midbrain.readPosition()
 		bot_posVlin=self.above_below_on_line(posCurrent,linstart,posDesired)
 		lineheading=self.heading_line(linstart,posDesired)
 		botheading = self.midbrain.readHeading()
 		print 'Line heading: '+str(lineheading)
 		print 'Bot heading: '+str(botheading)
+		print 'bot_posVlin', bot_posVlin
 		
 		#check through possible cases and assign the correct, desired, global heading accordingly
 		if (bot_posVlin=='above') & (botheading>lineheading): #above line and heading away from it.
 			print 'Bot above and heading away from line to be followed'
 			headDesired=((lineheading-botheading)/2)+lineheading
 
-		if (bot_posVlin=='below') & (botheading>lineheading): #below line and heading toward it.
+		elif (bot_posVlin=='below') & (botheading>lineheading): #below line and heading toward it.
 			print 'Bot below and heading away from line to be followed'
 			headDesired=((lineheading-botheading)/2)+lineheading
 
-		if (bot_posVlin=='below') & (botheading<lineheading): #below line and heading away from it. 
+		elif (bot_posVlin=='below') & (botheading<lineheading): #below line and heading away from it. 
 			print 'Bot below and heading toward from line to be followed'
 			headDesired=lineheading-math.fabs((lineheading-botheading)/2)
 
-		if (bot_posVlin=='above') & (botheading<lineheading): #above line and heading toward it.
+		elif (bot_posVlin=='above') & (botheading<lineheading): #above line and heading toward it.
 			print 'Bot above and heading toward from line to be followed'
 			headDesired=lineheading-math.fabs((lineheading-botheading)/2)
-		if bot_posVlin=='on': #on line! :)
+		elif bot_posVlin=='on': #on line! :)
 			print 'Bot is on the line to be followed!'
 			headDesired=lineheading
 			

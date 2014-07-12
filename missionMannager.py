@@ -1,9 +1,5 @@
 import time
-import bank
-import followLine
-import obsAvoid
-import goToPoint
-import mtnHeading
+from Forebrain import Forebrain
 
 
 def missionMannager():
@@ -12,7 +8,7 @@ def missionMannager():
 	
 	mission=[]
 	
-	for mode in range (0,number_of_modes):
+	for mode in range (number_of_modes):
 		mode=raw_input('What mode would you like to use here? choces: "line follow," "obstacle avoid," "go to point," "maintain heading" ')
 		if mode=='line follow':
 			pt1=raw_input('GPS Coordinates of first point (in brackets:[])? ')
@@ -37,7 +33,8 @@ def missionMannager():
 	for mis in mission:
 		print mis[0]
 		if mis[0]=='line follow':
-			while bank.bank('posCurrent')!=mis[2]:
+			print mis[2][0]
+			while bank.bank('posCurrent')!=(mis[2]):
 				followLine.followLine()
 				time.sleep(.25)
 		if mis[0]=='obstacle avoid':
