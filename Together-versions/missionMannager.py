@@ -49,14 +49,15 @@ def missionMannager(mission): #mission is a list of dictionaries
 			currentPos=forebrain.readPosition()
 			distToPt=distBtwnPts(currentPos, mis['pt2'])
 			print 'Dist between pts: ',distToPt
-			while bank.bank('posCurrent')!=(mis['pt2']):
+			while distToPt>=0.00002:
 				forebrain.followLine(pt1, pt2) #followLine(self,posCurrent,linstart,posDesired
 				time.sleep(.25)
 		if mis['mode']=='obstacle avoid':
 			for t in range (0,2*mis['time']):
 				forebrain.obsAvoid()
 		if mis['mode']=='go to point':
-			while bank.bank('posCurrent')!=mis['pt']:
+			currentPos=forebrain.readPosition()
+			while distBtwnPts(currentPos, mis['pt']) >= 0.00002:
 				forebrain.goToPoint(mis['pt'])
 				time.sleep(.25)
 		if mis['mode']=='maintain heading':
@@ -64,12 +65,12 @@ def missionMannager(mission): #mission is a list of dictionaries
 				forebrain.mtnHeading(mis['heading'])
 				time.sleep(.25)
 missionT=[
-	{'mode':'Line follow',
+	{'mode':'line follow',
 	'pt1':[4.5,8.99],
 	'pt2':[7.85,8.95]},
 	{'mode':'Obstacle avoid',
 	'time':10},
-	{'mode':'Go to point',
+	{'mode':'go to point',
 	'pt':[9,10]},
 	{'mode':'Maintain heading',
 	'heading':70,
