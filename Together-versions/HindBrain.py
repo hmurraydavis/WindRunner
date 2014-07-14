@@ -105,7 +105,8 @@ class Hindbrain:
 				longitude=longitude*-1
 			print 'Processed latitude:',latitude
 			print 'Processed longitude:',longitude
-			return [latitude,longitude]	
+			#return [latitude,longitude]	#TODO: uncomment when are actually using GPS data
+			return [0,1]
 		
 		
 	def readHeading(self):

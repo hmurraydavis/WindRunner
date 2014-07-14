@@ -72,11 +72,11 @@ class Forebrain:
 
 		return angle
 
-	def goToPoint(self):
+	def goToPoint(self,pt):
 		# '''outputs the necessary, global heading in order to go toward a point'''
 
 		currentHeading = self.midbrain.readHeading()
-		headingtoPoint=headingToPoint()
+		headingtoPoint=self.headingToPoint(pt)
 		print 'currentHeading' +str(currentHeading)
 		print 'headingtoPoint' +str(headingtoPoint)
 	
@@ -212,16 +212,22 @@ class Forebrain:
 			print 'desired stearing is: ' + str(stearingDesired) + ' degrees'
 			print 'desired sail is: ' + str(sailDesired) + ' degrees'
 			return (stearingDesired, sailDesired)
+			
+	def readPosition(self):
+		'''reads the current GPS position off the robot via the hindbrain's method'''
+		return self.midbrain.readPosition()
 	
 if __name__=='__main__':
 	FB=Forebrain()
+	FB.readPosition()
 	FB.obsAvoid()
 	FB.mtnHeading(45)
-	FB.followLine([3,4],[1,0],[9,10]) #followLine(self,posCurrent,linstart,posDesired):
+	FB.followLine([3,4],[1,0]) #followLine(self,posCurrent,linstart,posDesired):
 	FB.above_below_on_line([3,4],[1,0],[9,10])
 	FB.heading_line([1,0],[9,10]) #heading_line(self,linstart,posDesired)
 	FB.headingToPoint([9,10])
 	FB.setSails()
+	
 	#print ("test 1:")
 	#FB.test1()
 	
