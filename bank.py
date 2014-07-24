@@ -1,5 +1,6 @@
 # where all "global" variables are stored. A way of sharing data between all the dependednt functions
 
+
 #get most recent data:
 def getsailCurrent():
 	pass
