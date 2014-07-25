@@ -61,54 +61,56 @@ class Hindbrain:
 		
 	def readPosition(self):
 		'''Reads the current GPS position from the GPS chip.'''
-		data=self.GPS.readline() #uncomment when on BB
+		for i in range(8):
 		
-		#test data set: 
-		#data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74' #comment out when on BB
+			data=self.GPS.readline() #uncomment when on BB
 		
-		if data.startswith('$GPGGA')==True:
-			ckStng=data[1:data[14].find('*')-2]
+			#test data set: 
+			#data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74' #comment out when on BB
+		
+			if data.startswith('$GPGGA')==True:
+				ckStng=data[1:data[14].find('*')-2]
 
-			ckSum=0
-			for i in ckStng:
-				ckSum = ckSum ^ ord(i)
-			print 'Check sum caluclated: hex:', hex(ckSum), 'dec:', ckSum
-			data=data.split(',')
-			ckSumSat=data[14].split('*')
+				ckSum=0
+				for i in ckStng:
+					ckSum = ckSum ^ ord(i)
+				print 'Check sum caluclated: hex:', hex(ckSum), 'dec:', ckSum
+				data=data.split(',')
+				ckSumSat=data[14].split('*')
 	
 			
-			#if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
-				#print 'Check Sum Error from the GPS! :('
-				#positionUse=bank.bank('posPast')
-				#return positionUse
+				#if str(hex(ckSum)) != '0x'+str(ckSumSat[1]): #use  check sum from GPS vs calculated to verify string isn't corrupted:
+					#print 'Check Sum Error from the GPS! :('
+					#positionUse=bank.bank('posPast')
+					#return positionUse
 				
-			if False: #TODO: uncomment above checksum stuff, delete this placeholder
-				pass 
+				if False: #TODO: uncomment above checksum stuff, delete this placeholder
+					pass 
 				
-			else: #if the GPS string isn't corrupted, use it:
-				print 'Good GPS data! :)'					
-				if data[6]==0: #if there isn't a GPS lock, assume the robot hasn't moved
-					print 'No GPS Lock! :('
-					positionUse=bank.bank('posPast')
-					return positionUse
+				else: #if the GPS string isn't corrupted, use it:
+					print 'Good GPS data! :)'					
+					if data[6]==0: #if there isn't a GPS lock, assume the robot hasn't moved
+						print 'No GPS Lock! :('
+						positionUse=bank.bank('posPast')
+						return positionUse
 					
-				if data[6]==1:
-					print 'GPS fix!'
-				if data[6]==2:
-					print 'DGPS fix!'
+					if data[6]==1:
+						print 'GPS fix!'
+					if data[6]==2:
+						print 'DGPS fix!'
 				
-				latitude=data[2]
-				longitude=data[4]
-				latitude=int(latitude[:2])+(float(latitude[2:])/60)
-				if data[3]=='S': #convert to negative if on the negative side of the earth
-					latitude=latitude*-1
-				longitude=int(longitude[:2])+(float(longitude[2:])/60)
-				if data[5]=='W': #convert to negative if on the negative side of the world
-					longitude=longitude*-1
-				print 'Processed latitude:',latitude
-				print 'Processed longitude:',longitude
-				#return [latitude,longitude]	#TODO: uncomment when are actually using GPS data
-				return [0,1]
+					latitude=data[2]
+					longitude=data[4]
+					latitude=int(latitude[:2])+(float(latitude[2:])/60)
+					if data[3]=='S': #convert to negative if on the negative side of the earth
+						latitude=latitude*-1
+					longitude=int(longitude[:2])+(float(longitude[2:])/60)
+					if data[5]=='W': #convert to negative if on the negative side of the world
+						longitude=longitude*-1
+					print 'Processed latitude:',latitude
+					print 'Processed longitude:',longitude
+					#return [latitude,longitude]	#TODO: uncomment when are actually using GPS data
+					return [0,1]
 		
 		
 	def readHeading(self):
