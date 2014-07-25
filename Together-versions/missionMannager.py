@@ -52,20 +52,20 @@ def missionMannager(mission): #mission is a list of dictionaries
 			while distToPt>=0.00002:
 				forebrain.followLine(pt1, pt2) #followLine(self,posCurrent,linstart,posDesired
 				time.sleep(.25)
-		if mis['mode']=='obstacle avoid':
+		elif mis['mode']=='obstacle avoid':
 			for t in range (0,2*mis['time']):
 				forebrain.obsAvoid()
-		if mis['mode']=='go to point':
+		elif mis['mode']=='go to point':
 			currentPos=forebrain.readPosition()
 			while distBtwnPts(currentPos, mis['pt']) >= 0.00002:
 				forebrain.goToPoint(mis['pt'])
 				time.sleep(.25)
-		if mis['mode']=='maintain heading':
+		elif mis['mode']=='maintain heading':
 			for t in range (0,4*int(mis['time'])):
 				forebrain.mtnHeading(mis['heading'])
 				time.sleep(.25)
 missionT=[
-	{'mode':'line follow',
+	{'mode':'Line follow',
 	'pt1':[4.5,8.99],
 	'pt2':[7.85,8.95]},
 	{'mode':'Obstacle avoid',
