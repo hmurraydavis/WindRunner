@@ -69,6 +69,7 @@ class Hindbrain:
 			#data='$GPGGA,001038.00,3334.2313457,S,11211.0576940,W,2,04,5.4,354.682,M,-26.574,M,7.0,0138*74' #comment out when on BB
 		
 			if data.startswith('$GPGGA')==True:
+				print 'Raw GPGGA string: ', data
 				ckStng=data[1:data[14].find('*')-2]
 
 				ckSum=0
@@ -101,10 +102,19 @@ class Hindbrain:
 				
 					latitude=data[2]
 					longitude=data[4]
+					
+					print 'longitude data (raw) is: ',longitude
+					print 'splitting longitude', longitude[1:3]
+					print 'second part: ', float(longitude[2:])/60
+					longitude2=int(float(longitude[1:3]))+(float(longitude[2:])/60 )
+					print 'longitude 2 is: ', longitude2
 					latitude=int(latitude[:2])+(float(latitude[2:])/60)
 					if data[3]=='S': #convert to negative if on the negative side of the earth
 						latitude=latitude*-1
-					longitude=int(longitude[:2])+(float(longitude[2:])/60)
+
+					longitude=int(longitude[:2])+(float(longitude[2:])/60) #casts to a float in the process
+				
+					#print '[:2]', str(longitude)[1;3]
 					if data[5]=='W': #convert to negative if on the negative side of the world
 						longitude=longitude*-1
 					print 'Processed latitude:',latitude
