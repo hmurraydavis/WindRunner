@@ -10,7 +10,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly: 
-  int whoAmIReg=117
+  int gyroAddress=2;
+  int whoAmIReg=117;
   Wire.beginTransmission(whoAmIReg);
   Wire.write(1);
   //char byte1=Wire.read();
@@ -22,10 +23,10 @@ void loop() {
   Serial.println(Wire.read());
  
   
-  Serial.println('Transmission');
+  Serial.println("Transmission");
   //Serial.println(String(byte1));
   //Serial.println(byte2);
   //Serial.println(byte3);
   
-  delay (10); 
+  delay (9); 
 }
