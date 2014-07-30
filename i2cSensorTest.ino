@@ -10,16 +10,16 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly: 
-  int gyroAddress=2;
+  int gyroAddress=0x68; //from I2C scanner
   int whoAmIReg=117;
-  Wire.beginTransmission(whoAmIReg);
-  Wire.write(1);
+  Wire.beginTransmission(gyroAddress);
+  Wire.write(whoAmIReg);
   //char byte1=Wire.read();
   //char byte2=Wire.read();
   //char byte3=Wire.read();
   Wire.endTransmission();
   
-  Wire.requestFrom(whoAmIReg, 1);
+  Wire.requestFrom(gyroAddress, 1);
   Serial.println(Wire.read());
  
   
