@@ -10,14 +10,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly: 
-  Wire.beginTransmission(0X3D);
+  int whoAmIReg=117
+  Wire.beginTransmission(whoAmIReg);
   Wire.write(1);
   //char byte1=Wire.read();
   //char byte2=Wire.read();
   //char byte3=Wire.read();
   Wire.endTransmission();
   
-  Wire.requestFrom(0X3D, 1);
+  Wire.requestFrom(whoAmIReg, 1);
   Serial.println(Wire.read());
  
   
@@ -26,4 +27,5 @@ void loop() {
   //Serial.println(byte2);
   //Serial.println(byte3);
   
+  delay (10); 
 }
