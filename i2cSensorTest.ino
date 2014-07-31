@@ -1,6 +1,9 @@
+//Include libraries:
 #include <SoftwareSerial.h>
 #include <Wire.h>
 
+//define globals
+int gyroAddress=0x68; //from I2C scanner
 
 void setup() {
   // put your setup code here, to run once:
@@ -8,45 +11,38 @@ void setup() {
   Serial.begin(9600);
 }
 
-void wakeUpGyroY(){
-  //Tell the gyroscope we're talking to it and that 
-  //we're going to change the pow_mgmt_2 register to
-  //wake it up. 
-  int gyroAddress=0x68;
-  int powerMgmt2Address=0x6C;
+int readFromGyro(int readFromAddress){
   Wire.beginTransmission(gyroAddress);
-  Wire.write(powerMgmt2Address);
+  Wire.write(readFromAddress);
   Wire.endTransmission();
   
-  //Now time to write the new value to pow_mgmt_2 register
-  //to wake the gyro y axis up
-  int pwrMgmt2ValueForGyroY=B00000010;
+  Wire.requestFrom(gyroAddress, 1);
+  int readIn=Wire.read();
+}
+
+void writeToGyro(int writeToAddress, int writeValue){
   Wire.beginTransmission(gyroAddress);
-  Wire.write(pwrMgmt2ValueForGyroY);
+  Wire.write(writeToAddress);
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(gyroAddress);
+  Wire.write(writeValue);
   Wire.endTransmission();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly: 
-  int gyroAddress=0x68; //from I2C scanner
-  int tempL=66;
-  Wire.beginTransmission(gyroAddress);
-  Wire.write(tempL);
-  //char byte1=Wire.read();
-  //char byte2=Wire.read();
-  //char byte3=Wire.read();
-  Wire.endTransmission();
-  
-  wakeUpGyroY();//wake up the gyroscope before trying to read f
-  
-  Wire.requestFrom(gyroAddress, 1);
-  Serial.println(Wire.read());
+void loop() { 
+  //Gyro:
+    int tempL=66;
+    int whoAmI=117;
+    int pwrMgmt1=107;
+      int valueNoSleepPwrMgmt1=B00000000; //disables sleep (6) and cycle (5)
+    int pwrMgmt2=108;
+      int activateYaxisPwrMgmt2=B10111100;
+    
+  int readInWhoAmI=readFromGyro(whoAmI);
+  Serial.println(readInWhoAmI);
  
-  
   Serial.println("Transmission");
-  //Serial.println(String(byte1));
-  //Serial.println(byte2);
-  //Serial.println(byte3);
   
   delay (9); 
 }
