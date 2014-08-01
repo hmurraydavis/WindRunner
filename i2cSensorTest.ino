@@ -17,7 +17,7 @@ int readFromGyro(int readFromAddress){
   Wire.endTransmission();
   
   Wire.requestFrom(gyroAddress, 1);
-  int readIn=Wire.read();
+  return Wire.read();
 }
 
 void writeToGyro(int writeToAddress, int writeValue){
@@ -44,17 +44,17 @@ void loop() {
   writeToGyro(pwrMgmt1,valueNoSleepPwrMgmt1);
   writeToGyro(pwrMgmt2,activateYaxisPwrMgmt2);
   int pwr1St=readFromGyro(pwrMgmt1);
-  Serial.println("pwr1St"+String(pwr1St));
-  int pwr2St=readFromGyro(pwrMgmt2);
-  Serial.println("pwr2St"+String(pwr2St));
+  Serial.println("pwr1St: "+String(pwr1St));
+  //int pwr2St=readFromGyro(pwrMgmt2);
+  //Serial.println("pwr2St: "+String(pwr2St));
   
   int readInYGyroL=readFromGyro(gyroYL);
-  Serial.println("Y axis Gyro low value"+String(gyroYL));
+  Serial.println("Y axis Gyro low value: "+String(readInYGyroL));
   
   int readInYGyroH=readFromGyro(gyroYH);
-  Serial.println("Y axis Gyro high value"+String(gyroYH));
+  Serial.println("Y axis Gyro high value: "+String(readInYGyroH));
   
-  Serial.println("Transmission");
+  Serial.println("");
   
   delay (9); 
 }
