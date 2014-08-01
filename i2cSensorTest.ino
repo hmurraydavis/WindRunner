@@ -28,7 +28,7 @@ void writeToGyro(int writeToAddress, int writeValue){
 }
 
 void loop() { 
-  //Gyro:
+  //Gyro addresses and constants:
     int tempL=66;
     int whoAmI=117;
     int pwrMgmt1=107;
@@ -48,6 +48,8 @@ void loop() {
   //int pwr2St=readFromGyro(pwrMgmt2);
   //Serial.println("pwr2St: "+String(pwr2St));
   
+  writeToGyro(pwrMgmt1,valueNoSleepPwrMgmt1);
+  writeToGyro(pwrMgmt2,activateYaxisPwrMgmt2);
   int readInYGyroL=readFromGyro(gyroYL);
   Serial.println("Y axis Gyro low value: "+String(readInYGyroL));
   
