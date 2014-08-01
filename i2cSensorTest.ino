@@ -50,11 +50,14 @@ void loop() {
   
   writeToGyro(pwrMgmt1,valueNoSleepPwrMgmt1);
   writeToGyro(pwrMgmt2,activateYaxisPwrMgmt2);
-  int readInYGyroL=readFromGyro(gyroYL);
+  byte readInYGyroL=readFromGyro(gyroYL);
   Serial.println("Y axis Gyro low value: "+String(readInYGyroL));
   
-  int readInYGyroH=readFromGyro(gyroYH);
+  byte readInYGyroH=readFromGyro(gyroYH);
   Serial.println("Y axis Gyro high value: "+String(readInYGyroH));
+  
+  int gyroYReading=(int)(readInYGyroL+(readInYGyroH<<8));
+  Serial.println("Gyro reading is: "+String(gyroYReading));
   
   Serial.println("");
   
