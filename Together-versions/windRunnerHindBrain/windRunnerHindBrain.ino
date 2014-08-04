@@ -6,9 +6,9 @@
 //Declare globals:
 char current_line[8]; // allocate some space for the string
 
-//Steering servo:
+//declare steering servo:
 Servo steerServo;
-//Sail Servo
+//Declare sail Servo
 Servo sailServo;
 
 
@@ -19,24 +19,22 @@ String irRead(){
     int irSensor = 0; //IR sensor is on Arduino Analog pin 0
     int irReading=analogRead(irSensor);
     
-    return "IR"+String(irReading);
+    return String(irReading);
 }
 
 String gyroscopeRead(){}
 
-String windRead(){}
+String windRead(){
+	int windDirection=50; //TODO: actually read in wind direction
+	return String(windDirection);
+}
 
-String steerServoSet(int steerServoHeading){ 
-     
+void steerServoSet(int steerServoHeading){ 
     steerServo.write(steerServoHeading);
 }
 
-String sailServoSet(int winch_amount){
+void sailServoSet(int winch_amount){
     sailServo.write(winch_amount);
-    Serial.println(winch_amount);
-    //sailServo.writeMicroseconds(780);
-    delay(10);
-    //sailServo.writeMicroseconds(1500);
 }
 
 void setup() {
@@ -82,6 +80,8 @@ void loop() {
     int amount;
     String irReading;
     String gyroReading;
+    String windDirction;
+    
     Serial.println("in loop!");
     switch (current_line[0]){
         case 'c': // compass
@@ -89,28 +89,32 @@ void loop() {
           compassRead();
           break;
         case 'i': // infrared
-          Serial.println("Got an i, reading from IR range 1");
+          //Serial.println("Got an i, reading from IR range 1");
           irReading = irRead();
+          Serial.println("i"+String(irReading));
           break;
         case 'g': // gyro
-          Serial.println("Got a g, reading from gyroscope");
+          //TODO: Add in I2C read gyro code
+          //Serial.println("Got a g, reading from gyroscope");
           gyroReading=gyroscopeRead();
+          Serial.println("g"+String(gyroReading));
           break;
         case 'd': // wind direction
-          Serial.println("got a d, reading wind direction");
-          windRead();
+          //Serial.println("got a d, reading wind direction");
+          windDirction=windRead();
+          Serial.println("d"+String(windDirction));
           break;
         case 's': // steer actuator - expects "s1232" or some other number after 's'
           amount = get_amount(current_line);
-          Serial.print("Got a s, setting stearing servo to ");
-          Serial.println(amount);
+          //Serial.print("Got a s, setting stearing servo to ");
+          Serial.println(":)s"+String(amount));
           steerServoSet(amount);
           break;
-        case 'w': // winch actuator - expects a string with the same format of s  
+        case 'w': // winch actuator - expects a string with the same format as stear aervo  
           amount = get_amount(current_line);
-          Serial.print("got a w, setting sail winch to ");
-          Serial.println(amount);
-          sailServo.write(amount);
+          //Serial.print("got a w, setting sail winch to ");
+          Serial.println(":)w"+String(amount));
+          steerServoSet(amount); //sailServo.write(amount);
           break;
         case 'h':
           Serial.print("help mode");          
