@@ -24,110 +24,6 @@ String irRead(){
 
 String gyroscopeRead(){}
 
-void scanAddresses(){
-  /*Scanns all I2C addresses and if the value read 
-  in from a register (declared inside the function)
-  is not negative one, prints the address and what 
-  data was read in.*/
-  
-  int regista=0x47;
-  for(int deviceName=0;deviceName<257;deviceName++){
-    Wire.beginTransmission(deviceName);
-    Wire.write(regista);
-    Wire.endTransmission();
-    
-    Wire.requestFrom(deviceName, 1);
-    int byteG=Wire.read();
-    
-    if (byteG!=-1) {
-      Serial.println("Success with I2C!!!");
-      Serial.print("Address was: ");
-      Serial.println(deviceName);
-      Serial.print("Byte read was: ");
-      Serial.println(byteG);
-    }
-  }
-}
-
-void scanRegisters(){
-  int deviceName=237;
-  for(int regista=0;regista<257;regista++){
-    Wire.beginTransmission(deviceName);
-    Wire.write(regista);
-    Wire.endTransmission();
-    
-    Wire.requestFrom(deviceName, 1);
-    int byteG=Wire.read();
-    
-    delay(5);
-        
-    Wire.beginTransmission(deviceName);
-    Wire.write(regista);
-    Wire.endTransmission();
-    
-    Wire.requestFrom(deviceName, 1);
-    int byteG2=Wire.read();
-    
-    if (byteG!=byteG2) {
-      Serial.println("Success with I2C!!!");
-      Serial.print("Address was: ");
-      Serial.println(deviceName);
-      Serial.print("Byte 1 read was: ");
-      Serial.println(byteG);
-      Serial.print("Byte 2 read was: ");
-      Serial.println(byteG2);
-    }
-  }
-  Serial.println("Done scanning registers.");
-}
-
-void scanAllI2C(){
-  /*Scans all I2C registers and devices. Returns the 
-  device address and register if the data read back 
-  changes. */
-  
-    for(int deviceName=0; deviceName<256;deviceName++){
-        for (int regista=0;regista<256;regista++){
-           
-            Wire.beginTransmission(deviceName);
-            Wire.write(regista);
-            Wire.endTransmission();
-            
-            Wire.requestFrom(deviceName, 1);
-            int byteG=Wire.read();
-            
-            delay(5);
-            //Serial.println("aft del");
-            
-            Wire.beginTransmission(deviceName);
-            Wire.write(regista);
-            Wire.endTransmission();
-            
-            Wire.requestFrom(deviceName, 1);
-            int byteG2=Wire.read();
-            
-            //Serial.println("b4lp");
-            if ( (byteG!=byteG2) ) {
-                Serial.println("SUCCESS WITH I2C!!!!!!!!!!!!!");
-                Serial.print("Device name was: ");
-                Serial.println(deviceName);
-                Serial.print("register was: ");
-                Serial.println(regista);
-                //Serial.println("Hi, Louis!");
-                Serial.println(byteG);
-    
-            
-            }
-        }
-         if (deviceName%9==0){
-          Serial.println("Still scanning...");
-        }
-    }
-    Serial.println("Done I2C ing.");
-    //Serial.print("Gyroscope reading: ");
-    //Serial.println(byteG);
-}
-
 String windRead(){}
 
 String steerServoSet(int steerServoHeading){ 
@@ -217,9 +113,6 @@ void loop() {
           sailServo.write(amount);
           break;
         case 'h':
-          Serial.print("help mode");
-          //scanAddresses();
-          scanRegisters();
-          
+          Serial.print("help mode");          
     }
 }
