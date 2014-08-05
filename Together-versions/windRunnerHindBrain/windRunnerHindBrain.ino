@@ -43,10 +43,10 @@ void setup() {
     //attach servos:
     steerServo.attach(11);
     sailServo.attach(9);
-    steerServo.write(0);
-    sailServo.write(0);
+    steerServo.write(45);
+    sailServo.write(90);
     
-    Serial.println("Ready when you are!");
+    //Serial.println("Ready when you are!");
 }
 
 void read_line(char *line) {
@@ -82,7 +82,9 @@ void loop() {
     String gyroReading;
     String windDirction;
     
-    Serial.println("in loop!");
+    Serial.println(current_line);
+    
+    //Serial.println("in loop!");
     switch (current_line[0]){
         case 'c': // compass
           Serial.println("Got a c, reading from compass");
@@ -107,16 +109,16 @@ void loop() {
         case 's': // steer actuator - expects "s1232" or some other number after 's'
           amount = get_amount(current_line);
           //Serial.print("Got a s, setting stearing servo to ");
-          Serial.println(":)s"+String(amount));
+          Serial.println("ss"+String(amount));
           steerServoSet(amount);
           break;
         case 'w': // winch actuator - expects a string with the same format as stear aervo  
           amount = get_amount(current_line);
           //Serial.print("got a w, setting sail winch to ");
-          Serial.println(":)w"+String(amount));
+          Serial.println("sw"+String(amount));
           steerServoSet(amount); //sailServo.write(amount);
           break;
         case 'h':
-          Serial.print("help mode");          
+          Serial.println("help mode");          
     }
 }
