@@ -8,57 +8,41 @@ class Hindbrain:
 		#self.GPS=serial.Serial ('/dev/ttyO1') #uncomment when on BB
 		
 		#Arduino serial connection
-		self.arduino=serial.Serial('/dev/ttyACM1') #uncomment when arduino is connected
+		self.arduino=serial.Serial('/dev/ttyACM0') #uncomment when arduino is connected
 		
 		#self.count=0
 		#pass # comment when GPS or Arduino is connected
+		
+	def receiving(self,ser):
+		buffer = ''
+		while True:
+			read_values = ser.read(ser.inWaiting())
+			if '$' in read_values:
+				buffer = read_values.split('$')[-1]
+			else:
+				buffer = buffer + read_values
+			if '\n' in buffer:
+				lines = buffer.split('\n')
+				return lines[-2]
 	
 	def moveSailServos(self,sailServoAngle):
 		# '''Moves the sail winch servo to the desired location'''
 		send = 'w%i\n'%sailServoAngle
 		self.arduino.write(send)
-		print send
 		
-		echo=self.arduino.readline()
-		check = (echo == ('s'+send))
-		print 'echo is: ',echo
-		if True==check:
-			print 'Sail winch received set angle. :)'
-		if False==check:
-			print 'Error--Sail winch not receiving set angle. :('
-			#raise IOError('Sail winch not receiving set angle')
-		pass
 		
 	def moveStearServo(self, stearServoAngle):
 		#'''Moves the stearing servo to the desired angle'''
 		send='s%i\n' %stearServoAngle
 		self.arduino.write(send)
-		print send
-		
-		echo=self.arduino.readline()
-		check = echo == (':)'+send)
-		if True==check:
-			print 'Steer servo received set angle. :)'
-		if False==check:
-			print 'Error--Steer servo not receiving set angle. :('
-			#raise IOError('Steer servo not receiving set angle')
-		pass
 		
 	def readTilt(self):
 		'''Read the current tild of the robot off the horizontal from the gyroscope'''
 		send='g\n'
 		self.arduino.write(send)
 		print send
-		
-		echo=self.arduino.readline()
-		check = echo.startswith(send)
-		if True==check:
-			print 'Tilt sensor read from. :)'
-		if False==check:
-			print 'Error--tilt sensor not reading. :('
-			#raise IOError('tilt sensor not reading.')
-		return 45 #pretend tilt
-		pass
+		tilt=self.receiving(self.arduino)
+		print "tilt is:", tilt
 		
 	def readPosition(self):
 		'''Reads the current GPS position from the GPS chip.'''
@@ -129,51 +113,26 @@ class Hindbrain:
 				# '''Read the current tild of the robot off the horizontal from the gyroscope'''
 		send='c\n'
 		self.arduino.write(send)
-		print send
 		
-		echo=self.arduino.readline()		
-		check = echo.startswith(send)
-		if True==check:
-			print 'Compass read from. :)'
-		if False==check:
-			print 'Error--compass not reading. :('
-			#raise IOError('Compass not reading.')	
-		return 45 #pretend value for now. #TODO get returned arduino value	
-		pass
-		
+		headingRead=self.receiving(self.arduino)
+		print "heading is:", headingRead
 	def readObstacle1(self):
 		# '''Read from the standard IR sensor if there is an obstacle in front of the robot.'''
 		
 		send='i\n'
 		self.arduino.write(send)
 		print send
-		
-		echo=self.arduino.readline()		
-		check = echo.startswith(send)
-		if True==check:
-			print 'IR Range 1 read from. :)'
-		if False==check:
-			print 'Error--IR Range 1 not reading. :('
-			#raise IOError('IR Range 1 not reading.')	
+	
 		return 100 #TODO return actual dist to obstacle
-		pass
 		
 	def readWindDirecrion(self):
 		# ''' Read in the current, global, apparent wind direction from the wind sensor (compass)'''
 		
 		send='d\n'
 		self.arduino.write(send)
-		print send
 		
-		echo=self.arduino.readline()		
-		check = echo.startswith(send)
-		if True==check:
-			print 'Wind direction read from. :)'
-		if False==check:
-			print 'Error--Wind direction not reading. :('
-			#raise IOError('IR Range 1 not reading.')
-		return 60 #TODO return actual wind direction from arduino
-		pass
+		windDirect=self.receiving(self.arduino)
+		print "wind direction is:", windDirect
 		
 	def dontHitThat(self):
 		#'''Called by readObstacle if bot gets too close to an obstacle so it won't hit it. Puts servo to one side'''
@@ -186,9 +145,9 @@ class Hindbrain:
 if __name__=='__main__':
 	HB=Hindbrain()
 	#HB.readPosition()
-	HB.moveSailServos(50)
+	#HB.moveSailServos(3)
 	#HB.moveStearServo(50)
-	#HB.readTilt()
-	#HB.readHeading()
+	HB.readTilt()
+	HB.readHeading()
 	#HB.readObstacle1()
-	#HB.readWindDirecrion()
+	HB.readWindDirecrion()
