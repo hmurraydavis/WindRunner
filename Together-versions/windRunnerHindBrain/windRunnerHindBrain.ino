@@ -115,7 +115,7 @@ void loop() {
           amount = get_amount(current_line);
           //Serial.print("got a w, setting sail winch to ");
           //Serial.println("sw"+String(amount));
-          steerServoSet(amount); //sailServo.write(amount);
+          sailServoSet(amount); //sailServo.write(amount);
           break;
         case 'h':
           Serial.println("$hoi");          
