@@ -1,9 +1,9 @@
 import sys, tty, termios
 import serial
 
-stearServo=45 #initialize to middle
+stearServo=60 #initialize to middle
 sailServo=90 #initiialize to middle
-arduino=serial.Serial('/dev/ttyACM1')
+arduino=serial.Serial('/dev/ttyACM0')
  
 def read_char():
     '''
@@ -46,13 +46,13 @@ if __name__ == '__main__':
             		sailServo=180
             		print "Stop it! My sail is as far out as it can go!"
             	arduino.write("w%i\n"%sailServo)
-            if c=='x': #turn left
+            if c=='c': #turn left
             	stearServo=stearServo+1
-            	if stearServo>90:
-            		stearServo=90
+            	if stearServo>180:
+            		stearServo=180
             		print "Stop it! I'm as far left as I can go!"
             	arduino.write("s%i\n"%stearServo)
-            if c=='c': #turn right
+            if c=='x': #turn right
             	stearServo=stearServo-1
             	if stearServo<0:
             		stearServo=0
