@@ -79,8 +79,12 @@ void getGyroY() {
 void loop(){
    //Pressure sensor address and constants:
      int pressureTempAddress=0x2E;
-     byte pressureTempReading=readFromPressure(pressureTempAddress);
+     int AC1MSB=0xAA; //EPROM register 1
+     int AC2MSB=0xAC; //EPROM register 2
+     
+     byte pressureTempReading=readFromPressure(AC1MSB);
+     byte pt2=readFromPressure(AC2MSB);
      
      Serial.println("Pressure snesor temp: "+String(pressureTempReading));
-     
+     Serial.println("Pressure snesor temp: "+String(pt2));
 }
