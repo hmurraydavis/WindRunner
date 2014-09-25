@@ -81,10 +81,13 @@ void loop(){
      int pressureTempAddress=0x2E;
      int AC1MSB=0xAA; //EPROM register 1
      int AC2MSB=0xAC; //EPROM register 2
+     int chipID=11010000; 
      
-     byte pressureTempReading=readFromPressure(AC1MSB);
+     byte pressureTempReading=readFromPressure(pressureTempAddress);
      byte pt2=readFromPressure(AC2MSB);
+     byte chipRead=readFromPressure(chipID);
      
      Serial.println("Pressure snesor temp: "+String(pressureTempReading));
-     Serial.println("Pressure snesor temp: "+String(pt2));
+     //Serial.println("Pressure snesor temp: "+String(pt2));
+     //Serial.println("Chip ID: "+String(chipRead));
 }
