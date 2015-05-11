@@ -50,8 +50,14 @@ while(True):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Display the resulting frame
-    cv2.imshow('frame',gray)
-    (x,y),radius = cv2.minEnclosingCircle(img)
+    
+    cnt = contours[0]
+    (x,y),radius = cv2.minEnclosingCircle(cnt)
+    center = (int(x),int(y))
+    radius = int(radius)
+    print 'center: ', center, 'radius: ', radius
+    cat = cv2.circle(frame,center,radius,(0,255,0),5)
+    cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
