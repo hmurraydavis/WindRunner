@@ -4,11 +4,10 @@ import pprint
 
 def make_image_mask(img):
     #ret,thresh1 = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
-    lower = np.array([60,50,50])
-    upper = np.array([255,255,255])
-    mask = cv2.inRange(img, lower, upper)
-    cv2.imshow('mask',mask)
-    return mask
+    img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+    ret,thresh = cv2.threshold(img,80,255,cv2.THRESH_BINARY)
+    cv2.imshow('thresholded image',thresh)
+    return thresh
 
 def save_video_frame(img):
     cv2.imwrite(img)
@@ -35,22 +34,11 @@ camera_side = cv2.VideoCapture(camera_side)
 camera_back = cv2.VideoCapture(camera_back)
 
 while(True):
-    # Capture frame-by-frame
     ret, frame = camera_side.read()
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) #cvtColor(frame, frame, CV_BGR2GRAY)
     side_mask = make_image_mask(frame)
-#    contors = cv2.findContours(side_mask)
-    ret,thresh = cv2.threshold(hsv,127,255,cv2.THRESH_BINARY)
-    cv2.imshow('thresh', thresh)
-#    cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    img = cv2.drawContours(thresh, contours, -1, (0,255,0), 3) 
-#    cv2.imshow('contor img', img)
-    # Our operations on the frame come here
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    contours, hierarchy = cv2.findContours(side_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+#    img = cv2.drawContours(thresh, contours, -1, (0,255,0), 3) 
 
-    # Display the resulting frame
-    
     cnt = contours[0]
     (x,y),radius = cv2.minEnclosingCircle(cnt)
     center = (int(x),int(y))
