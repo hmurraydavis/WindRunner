@@ -76,10 +76,11 @@ while 1:
         
         #Read video frames in from the webcams:
         __error_code, side_frame = camera_side.read()
-        cv2.imshow('side frame', side_frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-#        back_frame = camera_back.read()
+#        cv2.imshow('side frame', side_frame)
+##        camera_side.release()
+##        cv2.destroyAllWindows()
+        __error_code, back_frame = camera_back.read()
+        cv2.imshow('back frame', back_frame)
         
 #        side_mask = make_image_mask(side_frame)
         
@@ -90,8 +91,12 @@ while 1:
 ###            print dataString
 ###            f.write(sensor_data)
 ###            f.write('\n')
-            
+         
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     except KeyboardInterrupt as e:
+        camera_side.release()
+        cv2.destroyAllWindows()
         import traceback
         traceback.print_exc()
         exit()
@@ -99,3 +104,5 @@ while 1:
         with open(write_file, 'a') as f:
             f.write('SOMETHING_WENT_WRONG')
             f.write('\n')
+        camera_side.release()
+        cv2.destroyAllWindows()
