@@ -5,11 +5,12 @@ import threading
 import datetime
 import time
 
-testNum=10
+testNum=44
+
 
 #For collecting data for IRSC 2015 conference
 
-write_file = 'setup{}.txt'.format(testNum)
+write_file = 'test{}.txt'.format(testNum)
 #Test 1 -- NA
 #Test 2 -- luffing
 #Test 3 -- holding shape
@@ -20,6 +21,22 @@ write_file = 'setup{}.txt'.format(testNum)
 #Test 8 -- both 
 
 #Test 10-system trial
+#10-14-luff
+#15-23 hold shape
+#23-28 luffing
+#29 scratch
+#start holding shape then release below here
+#30 and not  - good
+#31 and not fantastic!!!
+#32good
+#33 so so not that much luff
+#34 really nice trial! great release and luff
+#35 pretty nice trial
+#36 not good, bad transion to luff.not existant.setreme luff
+#37 pretty good
+
+#all three holding, luffing, and holding
+#38
 
 # Camera 0 is the integrated web cam on my netbook
 camera_side = 1 #right Webcam
@@ -56,7 +73,7 @@ def make_image_mask(img):
 #    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
 #    ret,thresh = cv2.threshold(img,40,255,cv2.THRESH_BINARY)
 #         define range of blue color in HSV
-    lower_blue = np.array([60,20,10])
+    lower_blue = np.array([80,20,10])
     upper_blue = np.array([180,180,255])
 
     # Threshold the HSV image to get only blue colors
