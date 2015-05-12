@@ -3,17 +3,14 @@ import numpy as np
 import pprint
 
 def make_image_mask(img):
-    #ret,thresh1 = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
     ret,thresh = cv2.threshold(img,80,255,cv2.THRESH_BINARY)
-    cv2.imshow('thresholded image',thresh)
     return thresh
 
 def save_video_frame(img):
     cv2.imwrite(img)
     
 def get_side_video():
-
     ret, side_vid = camera_side.read()
     side_mask = make_image_mask(side_vid)
     (x,y),radius = cv2.minEnclosingCircle(side_mask)
