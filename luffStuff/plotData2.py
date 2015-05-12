@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-test_num = 41
+test_num = 27
 
 start_val=0
-end_val=250
+end_val=100
+
+mode=' Sensor Data, Luffing Sail'
 
 #Test 1 -- NA
 #Test 2 -- luffing
@@ -62,57 +64,57 @@ for line in f:
 
 #Pressure Plot!
 fig, ax1 = plt.subplots()
-ax1.plot(p[start_val:end_val], 'b')
-ax1.set_xlabel('time (s)')
+ax1.plot(p[start_val:end_val], 'b', label='Pressure Sensor')
+ax1.set_xlabel('time (s)', size=18)
 # Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Pressure (mbar)', color='b')
+ax1.set_ylabel('Pressure (mbar)', color='b', size=18)
 for tl in ax1.get_yticklabels():
     tl.set_color('b')
 
 
 ax2 = ax1.twinx()
-ax2.plot(sdx[start_val:end_val], 'r')
-ax2.set_ylabel('Point X Position (pixels)', color='r')
+ax2.plot(sdx[start_val:end_val], 'r', label='X Position')
+ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
 for tl in ax2.get_yticklabels():
     tl.set_color('r')
-plt.title('Pressure over Time', fontsize=25)
+plt.title('Pressure'+mode, fontsize=25)
 plt.show()
 
 
 #Acceleration Plot!!
 fig2, ax1 = plt.subplots()
 ax1.plot(az[start_val:end_val], 'g')
-ax1.set_xlabel('time (s)')
+ax1.set_xlabel('time (s)', size=18)
 # Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Z Axis Acceleration (V)', color='g')
+ax1.set_ylabel('Z Axis Acceleration (V)', color='g', size=18)
 for tl in ax1.get_yticklabels():
     tl.set_color('g')
 
 
 ax2 = ax1.twinx()
 ax2.plot(sdx[start_val:end_val], 'r')
-ax2.set_ylabel('Point X Position (pixels)', color='r')
+ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
 for tl in ax2.get_yticklabels():
     tl.set_color('r')
-plt.title('Acceleration over Time', fontsize=25)
+plt.title('Acceleration'+mode, fontsize=25)
 plt.show()
 
 #Vibration Plot!!
 fig3, ax1 = plt.subplots()
 ax1.plot(z[start_val:end_val], 'm')
-ax1.set_xlabel('time (s)')
+ax1.set_xlabel('time (s)', size=18)
 # Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Vibration (V)', color='m')
+ax1.set_ylabel('Vibration (V)', color='m', size=18)
 for tl in ax1.get_yticklabels():
     tl.set_color('m')
 
 
 ax2 = ax1.twinx()
 ax2.plot(sdx[start_val:end_val], 'r')
-ax2.set_ylabel('Point X Position (pixels)', color='r')
+ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
 for tl in ax2.get_yticklabels():
     tl.set_color('r')
-plt.title('Vibration over Time', fontsize=25)
+plt.title('Vibration'+mode, fontsize=25)
 plt.show()
 
 
