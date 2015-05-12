@@ -5,11 +5,11 @@ import threading
 import datetime
 import time
 
-testNum=8
+testNum=10
 
 #For collecting data for IRSC 2015 conference
 
-write_file = 'spoof{}.txt'.format(testNum)
+write_file = 'setup{}.txt'.format(testNum)
 #Test 1 -- NA
 #Test 2 -- luffing
 #Test 3 -- holding shape
@@ -18,6 +18,8 @@ write_file = 'spoof{}.txt'.format(testNum)
 #Test 6 -- NA -- bad accl sensor_data
 #Test 7 -- luffing
 #Test 8 -- both 
+
+#Test 10-system trial
 
 # Camera 0 is the integrated web cam on my netbook
 camera_side = 1 #right Webcam
@@ -54,18 +56,18 @@ def make_image_mask(img):
 #    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
 #    ret,thresh = cv2.threshold(img,40,255,cv2.THRESH_BINARY)
 #         define range of blue color in HSV
-    lower_blue = np.array([90,90,10])
-    upper_blue = np.array([200,200,255])
+    lower_blue = np.array([60,20,10])
+    upper_blue = np.array([180,180,255])
 
     # Threshold the HSV image to get only blue colors
     thresh = cv2.inRange(img, lower_blue, upper_blue)
     return thresh
 
 def save_video_frame(img):
+    global img_val
     file_name='test{}image{}.jpg'.format(str(testNum), str(img_val))
     cv2.imwrite(file_name, img)
-    global img_val
-    file_name = img_val+1
+    img_val = img_val+1
     
     
 def get_circle_sd():
@@ -81,7 +83,7 @@ def get_circle_sd():
     (x,y),radius = cv2.minEnclosingCircle(cnt)
     side_center = (int(x),int(y))
     side_radius = int(radius)
-    print 'center: ', side_center, 'radius: ', side_radius, ' found from side camera'
+    #print 'center: ', side_center, 'radius: ', side_radius, ' found from side camera'
     cat = cv2.circle(frame,side_center,side_radius,(0,255,0),5)
     cat = cv2.circle(side_mask,side_center,side_radius,(0,255,0),5)
     cv2.imshow('frame',frame)
@@ -102,7 +104,7 @@ def get_circle_bk():
     (x,y),radius = cv2.minEnclosingCircle(cnt)
     back_center = (int(x),int(y))
     back_radius = int(radius)
-    print 'center: ', back_center, 'radius: ', back_radius, 'found from back camera'
+    #print 'center: ', back_center, 'radius: ', back_radius, 'found from back camera'
     cat = cv2.circle(frame,back_center,back_radius,(0,255,0),5)
 #    cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -120,11 +122,11 @@ def get_circle_bk():
 while 1:
     try:
         #Read data in from the Arduino:
-        print 'pre-arduino'
+        #print 'pre-arduino'
         sensor_data = receiving(arduino)
-        print 'got dat arduino stuff'
+        #print 'got dat arduino stuff'
         
-        print datetime.datetime.now()
+        #print datetime.datetime.now()
         #Read video frames in from the webcams:
         
         sdcenter, sdradius = get_circle_sd()
