@@ -60,6 +60,7 @@ for line in f:
         sdx.append(sdx_value)
         sdy.append(sdy_value)
 
+#Pressure Plot!
 fig, ax1 = plt.subplots()
 ax1.plot(p[start_val:end_val], 'b')
 ax1.set_xlabel('time (s)')
@@ -77,40 +78,41 @@ for tl in ax2.get_yticklabels():
 plt.title('Pressure over Time', fontsize=25)
 plt.show()
 
-###Pressure plot
-##p = np.array(p)
-##plt.plot(p[:end_val], linewidth=3.0, label='pressure')
-##plt.plot(sdx[:end_val], linewidth=3.0, label='x position')
-##plt.legend()
-##plt.ylabel('Pressure (mb)', fontsize=17)
-##plt.xlabel('Time', fontsize=17)
-##plt.title('Pressure over Time', fontsize=25)
-##plt.show()
 
-#Acceleration plot
-plt.clf()
-plt.plot(az, 'g', linewidth=3.0)
-plt.plot(sdx, linewidth=3.0, label='x position')
-plt.ylabel('Acceleration (V)', fontsize=17)
-plt.xlabel('Time', fontsize=17)
+#Acceleration Plot!!
+fig2, ax1 = plt.subplots()
+ax1.plot(az[start_val:end_val], 'g')
+ax1.set_xlabel('time (s)')
+# Make the y-axis label and tick labels match the line color.
+ax1.set_ylabel('Z Axis Acceleration (V)', color='g')
+for tl in ax1.get_yticklabels():
+    tl.set_color('g')
+
+
+ax2 = ax1.twinx()
+ax2.plot(sdx[start_val:end_val], 'r')
+ax2.set_ylabel('Point X Position (pixels)', color='r')
+for tl in ax2.get_yticklabels():
+    tl.set_color('r')
 plt.title('Acceleration over Time', fontsize=25)
 plt.show()
 
-#Vibration plot
-plt.clf()
-plt.plot(z, 'm', linewidth=3.0)
-plt.plot(sdx, linewidth=3.0, label='x position')
-plt.ylabel('Vibration (V)', fontsize=17)
-plt.xlabel('Time', fontsize=17)
+#Vibration Plot!!
+fig3, ax1 = plt.subplots()
+ax1.plot(z[start_val:end_val], 'm')
+ax1.set_xlabel('time (s)')
+# Make the y-axis label and tick labels match the line color.
+ax1.set_ylabel('Vibration (V)', color='m')
+for tl in ax1.get_yticklabels():
+    tl.set_color('m')
+
+
+ax2 = ax1.twinx()
+ax2.plot(sdx[start_val:end_val], 'r')
+ax2.set_ylabel('Point X Position (pixels)', color='r')
+for tl in ax2.get_yticklabels():
+    tl.set_color('r')
 plt.title('Vibration over Time', fontsize=25)
 plt.show()
 
-##plt.clf()
-##plt.plot(sdx, linewidth=3.0, label='x position')
-##plt.plot(sdy, linewidth=3.0, label='y position')
-##plt.legend()
-##plt.ylabel('Position (Pixels)', fontsize=17)
-##plt.xlabel('Time', fontsize=17)
-##plt.title('Position over Time', fontsize=25)
-##plt.show()
 
