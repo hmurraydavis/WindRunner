@@ -1,6 +1,10 @@
 import serial
 import cv2
 import numpy as np
+import threading
+import datetime
+
+#For collecting data for IRSC 2015 conference
 
 write_file = 'spoof3.txt'
 #Test 1 -- NA
@@ -15,20 +19,16 @@ write_file = 'spoof3.txt'
 # Camera 0 is the integrated web cam on my netbook
 camera_side = 1 #right Webcam
 camera_back = 2
- 
-#Number of frames to throw away while the camera adjusts to light levels
-ramp_frames = 30
- 
-#### Now we can initialize the camera capture object with the cv2.VideoCapture class.
-#### All it needs is the index to a camera port.
-camera_side = cv2.VideoCapture(camera_side)
-camera_back = cv2.VideoCapture(camera_back)
 
+#make ze global variables!!!
+side_center=(0,0)
+back_center=(0,0)
+side_radius=0
+back_radius=0
 
-#For collecting data for IRSC 2015 conference
 
 #Arduino serial connection
-arduino=serial.Serial('/dev/ttyACM1')
+arduino=serial.Serial('/dev/ttyACM0')
 
 def receiving(ser):
 	buffer = ''
@@ -50,17 +50,51 @@ def make_image_mask(img):
 def save_video_frame(img):
     cv2.imwrite(img)
     
-def get_side_video():
-    ret, side_vid = camera_side.read()
-    return side_vid
     
-def get_back_video():
-    ret, back_vid = camera_back.read()
-    back_mask = make_image_mask(back_vid)
-    (x,y),radius = cv2.minEnclosingCircle(back_mask)
-    save_video_frame(back_vid)
-    print 'Back pos = ', (x,y)
-    return (x,y) 
+def get_circle_sd():
+    global side_center, side_radius
+    
+    camera_side_obj = cv2.VideoCapture(camera_side)
+    ret, frame = camera_side_obj.read()
+    
+    side_mask = make_image_mask(frame)
+    contours, hierarchy = cv2.findContours(side_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
+    cnt = contours[0]
+    (x,y),radius = cv2.minEnclosingCircle(cnt)
+    side_center = (int(x),int(y))
+    side_radius = int(radius)
+    print 'center: ', side_center, 'radius: ', side_radius, ' found from side camera'
+    cat = cv2.circle(frame,side_center,side_radius,(0,255,0),5)
+#    cv2.imshow('frame',frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        exit()
+    camera_side_obj.release()
+    cv2.destroyAllWindows()
+    return (x,y), radius
+    
+def get_circle_bk():
+    global back_center, back_radius
+    
+    camera_side = cv2.VideoCapture(camera_back)
+    ret, frame = camera_side.read()
+    
+    side_mask = make_image_mask(frame)
+    contours, hierarchy = cv2.findContours(side_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
+    cnt = contours[0]
+    (x,y),radius = cv2.minEnclosingCircle(cnt)
+    back_center = (int(x),int(y))
+    back_radius = int(radius)
+    print 'center: ', back_center, 'radius: ', back_radius, 'found from back camera'
+    cat = cv2.circle(frame,back_center,back_radius,(0,255,0),5)
+#    cv2.imshow('frame',frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        exit()
+    camera_side.release()
+    cv2.destroyAllWindows()
+    
+    return back_center, back_radius
 
 			
 #general methodology:
@@ -74,15 +108,14 @@ while 1:
         #Read data in from the Arduino:
         sensor_data = receiving(arduino)
         
+        print datetime.datetime.now()
         #Read video frames in from the webcams:
-        __error_code, side_frame = camera_side.read()
-        cv2.imshow('side frame', side_frame)
-        __error_code, back_frame = camera_back.read()
-        cv2.imshow('back frame', back_frame)
         
-#        side_mask = make_image_mask(side_frame)
+        t = threading.Thread(target=get_circle_bk)
+        t.start()
         
-        #Camera color mask and circle finding!
+#        get_circle_bk()
+        get_circle_sd()
 
 ###        with open(write_file, 'a') as f:
 ###            dataString=sensor_data+',S:'+side_pos+',B:'+back_pos
@@ -102,5 +135,3 @@ while 1:
         with open(write_file, 'a') as f:
             f.write('SOMETHING_WENT_WRONG')
             f.write('\n')
-        camera_side.release()
-        cv2.destroyAllWindows()
