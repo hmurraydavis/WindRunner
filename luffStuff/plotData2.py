@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 test_num = 41
+
+start_val=0
 end_val=250
 
 #Test 1 -- NA
@@ -59,7 +61,7 @@ for line in f:
         sdy.append(sdy_value)
 
 fig, ax1 = plt.subplots()
-ax1.plot(p[:end_val], 'b')
+ax1.plot(p[start_val:end_val], 'b')
 ax1.set_xlabel('time (s)')
 # Make the y-axis label and tick labels match the line color.
 ax1.set_ylabel('Pressure (mbar)', color='b')
@@ -68,7 +70,7 @@ for tl in ax1.get_yticklabels():
 
 
 ax2 = ax1.twinx()
-ax2.plot(sdx[:end_val], 'r')
+ax2.plot(sdx[start_val:end_val], 'r')
 ax2.set_ylabel('Point X Position (pixels)', color='r')
 for tl in ax2.get_yticklabels():
     tl.set_color('r')
