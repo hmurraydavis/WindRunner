@@ -76,9 +76,7 @@ while 1:
         
         #Read video frames in from the webcams:
         __error_code, side_frame = camera_side.read()
-#        cv2.imshow('side frame', side_frame)
-##        camera_side.release()
-##        cv2.destroyAllWindows()
+        cv2.imshow('side frame', side_frame)
         __error_code, back_frame = camera_back.read()
         cv2.imshow('back frame', back_frame)
         
