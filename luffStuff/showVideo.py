@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 
 # Camera 0 is the integrated web cam on my netbook
-camera_side = 1 #right Webcam
-camera_back = 2
+camera_side = 2 #right Webcam
+camera_back = 1
  
 #Number of frames to throw away while the camera adjusts to light levels
 ramp_frames = 30
@@ -11,7 +11,7 @@ ramp_frames = 30
 #### Now we can initialize the camera capture object with the cv2.VideoCapture class.
 #### All it needs is the index to a camera port.
 camera_side = cv2.VideoCapture(camera_side)
-camera_back = cv2.VideoCapture(camera_back)
+#camera_back = cv2.VideoCapture(camera_back)
 
 while(True):
     # Capture frame-by-frame
