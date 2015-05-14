@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from tabulate import tabulate
 
-test_num = 13
+test_num=-1
 
 start_val=0
 end_val=100
@@ -10,7 +11,7 @@ time_window = 20
 
 mode=' Sensor Data, Sail Holding Shape'
 
-luffing_tests=[10,11,12,13,14,23,24,25,26,27,28]
+luffing_tests=[10,11,12,13,24,25,26,27,28] #TODO: fix test 23
 holding_shape_tests = [15,16,17,18,19,20,21,22,23]
 
 #Test 1 -- NA
@@ -40,34 +41,37 @@ holding_shape_tests = [15,16,17,18,19,20,21,22,23]
 #all three holding, luffing, and holding
 #38
 
-#Open file as read only to get ze datas:
-file_name = '5-11_data_collection/test{}.txt'.format(str(test_num))
-f = open(file_name, 'r')
+def read_test_data_from_file():
+    #Open file as read only to get ze datas:
+    file_name = '5-11_data_collection/test{}.txt'.format(str(test_num))
+    f = open(file_name, 'r')
 
-p=[] #array of pressure values
-az=[]
-z=[]
-sdx = []
-sdy= []
+    p=[] #array of pressure values
+    az=[]
+    z=[]
+    sdx = []
+    sdy= []
 
-for line in f:
-    if not 'SOMETHING_WENT_WRONG' in line:
-        SC, SR, P,AZ,Z = line.split(' ') #Split the line into useful segments
-        __sentinal, p_value = P.split('P:')
-        __sentinal, az_value = AZ.split('Az:')
-        __sentinal, z_value = Z.split('Z:')
-        __sentinal, sc_values = SC.split('Sc:')
-        az_value = float(az_value) * (5.0 / 1023.0)
-        z_value = float(z_value)* (5.0 / 1023.0)
-        sdx_value,sdy_value = sc_values.split('|')
-#        print p_value
-        p.append(p_value)
-        az.append(az_value)
-        z.append(z_value)
-        sdx.append(sdx_value)
-        sdy.append(sdy_value)
+    for line in f:
+        if not 'SOMETHING_WENT_WRONG' in line:
+            SC, SR, P,AZ,Z = line.split(' ') #Split the line into useful segments
+            __sentinal, p_value = P.split('P:')
+            __sentinal, az_value = AZ.split('Az:')
+            __sentinal, z_value = Z.split('Z:')
+            __sentinal, sc_values = SC.split('Sc:')
+            az_value = float(az_value) * (5.0 / 1023.0)
+            z_value = float(z_value)* (5.0 / 1023.0)
+            sdx_value,sdy_value = sc_values.split('|')
+    #        print p_value
+            p.append(p_value)
+            az.append(az_value)
+            z.append(z_value)
+            sdx.append(sdx_value)
+            sdy.append(sdy_value)
+#            print line
+    return p, az, z #TODO: RETURN POSITION DATA, WHEN NEEDED
 
-def compute_variances_pressure_sensor(p):
+def compute_pressure_statistics(p):
     for i, value in enumerate(p):
         p[i]=float(value)
         
@@ -78,10 +82,12 @@ def compute_variances_pressure_sensor(p):
         pres_var.append(np.var(p[start_var_calc:end_var_calc]))
         start_var_calc = start_var_calc + 1
         end_var_calc = end_var_calc + 1
-    print 'Average of pressure varience, test {}'.format(test_num), sum(pres_var)/len(pres_var)
-    return pres_var
-    
+#    print 'Average of pressure varience, test {}'.format(test_num), sum(pres_var)/len(pres_var)
+    return sum(pres_var)/len(pres_var)
+
+
 def compute_acceleration_statistics(az):
+    global start_val
     plot_array=[]
     az_rectified=[]; az_tozero=[]
     for i in range(start_val,end_val):
@@ -105,8 +111,11 @@ def compute_acceleration_statistics(az):
         acclZ_val.append(max_in_time_window)
         start_val=start_var_calc+1
         
-    print 'average of rectified acceleration data, test {}: '.format(test_num), sum(az_rectified)/len(az_rectified)
-    print 'average of max val in time interval, test {}: '.format(test_num), sum(acclZ_val)/len(acclZ_val)
+    accl_rect_avg = sum(az_rectified)/len(az_rectified)
+    accl_max_avg = sum(acclZ_val)/len(acclZ_val)
+#    print 'average of rectified acceleration data, test {}: '.format(test_num), accl_rect_avg
+#    print 'average of max val in time interval, test {}: '.format(test_num), accl_max_avg
+    return accl_rect_avg, accl_max_avg
 
 
 def compute_piezo_statistics(z): 
@@ -125,12 +134,53 @@ def compute_piezo_statistics(z):
         max_in_time_window=max(z_rectified[start_var_calc:start_var_calc+time_window])
         start_var_calc=start_var_calc+1
         z_max_vals.append(max_in_time_window)
+    
+    pez_rect_avg = sum(z_rectified)/len(z_rectified)
+    pez_max_avg = sum(z_max_vals)/len(z_max_vals)
+#    print 'Average rectified piezo data, test {}: '.format(test_num), pez_rect_avg
+#    print 'Average max rectified piezo data in time window, test {}: '.format(test_num), pez_max_avg
+    
+    return pez_rect_avg, pez_max_avg
+    
+def avg_and_append(array):
+    return array.append(sum(array[1:])/len(array[1:]))
+
+
+def make_data_table(test_set):
+    trial_num=['']
+    ms_rect_avg = ['Minisense 100 Rectified Average']
+    ms_av_max = ['Minisense 100 Average of Maxes']
+    adxl_rectified_avg = ['ADXL 335 Rectified Average']
+    adxl_av_max = ['ADXL 335 Average of Maxes']
+    bmp_var = ['BMP 180 Average Variance']
+    for trial in test_set:
+        global test_num
+        test_num = trial
+    #    print 'trial: ', trial
+        p, az, z = read_test_data_from_file()
+        pres = compute_pressure_statistics(p)
+        accl_rect_avg, accl_max_avg = compute_acceleration_statistics(az)
+        pez_rect_avg, pez_max_avg = compute_piezo_statistics(z)
+    #    print '\n'
+        trial_num.append(trial)
+        bmp_var.append(pres)
+        adxl_rectified_avg.append(accl_rect_avg)
+        adxl_av_max.append(accl_max_avg)
+        ms_rect_avg.append(pez_rect_avg)
+        ms_av_max.append(pez_max_avg)
         
-    print 'Average rectified piezo data, test {}: '.format(test_num), sum(z_rectified)/len(z_rectified)
-    print 'Average max rectified piezo data in time window, test {}: '.format(test_num), sum(z_max_vals)/len(z_max_vals)
+    print bmp_var
+    table = [ms_rect_avg, ms_av_max, adxl_rectified_avg, adxl_av_max, bmp_var]
+    for array in table:
+        avg_and_append(array)
+    trial_num.append('Average')
+    table = [trial_num, ms_rect_avg, ms_av_max, adxl_rectified_avg, adxl_av_max, bmp_var]    
+    print tabulate(table, tablefmt='grid')
 
-
-
+print 'lffing: '
+make_data_table(luffing_tests)
+print 'Holding shape: '
+make_data_table(holding_shape_tests)
 
 ###Pressure Plot!
 ##fig, ax1 = plt.subplots()
