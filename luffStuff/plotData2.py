@@ -78,32 +78,58 @@ def compute_variances_pressure_sensor(p):
         pres_var.append(np.var(p[start_var_calc:end_var_calc]))
         start_var_calc = start_var_calc + 1
         end_var_calc = end_var_calc + 1
+    print 'Average of pressure varience, test {}'.format(test_num), sum(pres_var)/len(pres_var)
     return pres_var
     
+def compute_acceleration_statistics(az):
+    plot_array=[]
+    az_rectified=[]; az_tozero=[]
+    for i in range(start_val,end_val):
+        plot_array.append(i)
+        
+    m,b = np.polyfit(plot_array,az[start_val:end_val],1)
 
-plot_array=[]
-az_rectified=[]; az_tozero=[]
-for i in range(start_val,end_val):
-    plot_array.append(i)
-    
-m,b = np.polyfit(plot_array,az[start_val:end_val],1)
+    for i, value in enumerate(az):
+        az[i]=float(value)
+        az_tozero.append(az[i]-b)
+        az_rectified.append(abs(az[i]-b))
 
-for i, value in enumerate(az):
-    az[i]=float(value)
-    az_tozero.append(az[i]-b)
-    az_rectified.append(abs(az[i]-b))
+    ##plt.plot(az_tozero, 'r', linewidth=3.0, label='Acceleration, normalized about 0')
+    ##plt.plot(az_rectified, 'y', linewidth=3.0, label='Acceleration normalized and rectified')
+    ##plt.legend()
+    ##plt.show()
+    start_var_calc = start_val
+    acclZ_val=[]
+    for i in range(start_val, end_val-time_window):
+        max_in_time_window = max(az[start_var_calc:start_var_calc+time_window])
+        acclZ_val.append(max_in_time_window)
+        start_val=start_var_calc+1
+        
+    print 'average of rectified acceleration data, test {}: '.format(test_num), sum(az_rectified)/len(az_rectified)
+    print 'average of max val in time interval, test {}: '.format(test_num), sum(acclZ_val)/len(acclZ_val)
 
-##plt.plot(az_tozero, 'r', linewidth=3.0, label='Acceleration, normalized about 0')
-##plt.plot(az_rectified, 'y', linewidth=3.0, label='Acceleration normalized and rectified')
-##plt.legend()
-##plt.show()
-end_var_calc = time_window
-start_var_calc = start_val
-acclZ_val=[]
-for i in range(start_val, end_val-time_window):
-    max_in_time_window = max(az[start_var_calc:end_var_calc])
-    acclZ_val.append(max_in_time_window)
-print 'average of rectified acceleration data, test {}: '.format(test_num), sum(az_rectified)/len(az_rectified)
+
+def compute_piezo_statistics(z): 
+    plot_array=[]; start_var_calc=start_val
+    z_tozero=[]; z_rectified=[]; z_max_vals=[]
+
+    for i in range(start_val,end_val):
+        plot_array.append(i)
+    m,b = np.polyfit(plot_array,z[start_val:end_val],1)
+    for i,value in enumerate(z):
+        z[i]=float(z[i])
+        z_tozero.append(z[i]-b)
+        z_rectified.append(abs(z_tozero[i]))
+        
+    for i in range(start_val, end_val-time_window): 
+        max_in_time_window=max(z_rectified[start_var_calc:start_var_calc+time_window])
+        start_var_calc=start_var_calc+1
+        z_max_vals.append(max_in_time_window)
+        
+    print 'Average rectified piezo data, test {}: '.format(test_num), sum(z_rectified)/len(z_rectified)
+    print 'Average max rectified piezo data in time window, test {}: '.format(test_num), sum(z_max_vals)/len(z_max_vals)
+
+
 
 
 ###Pressure Plot!
