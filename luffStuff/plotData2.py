@@ -1,12 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-test_num = 27
+test_num = 13
 
 start_val=0
 end_val=100
 
-mode=' Sensor Data, Luffing Sail'
+time_window = 20
+
+mode=' Sensor Data, Sail Holding Shape'
+
+luffing_tests=[10,11,12,13,14,23,24,25,26,27,28]
+holding_shape_tests = [15,16,17,18,19,20,21,22,23]
 
 #Test 1 -- NA
 #Test 2 -- luffing
@@ -36,7 +41,7 @@ mode=' Sensor Data, Luffing Sail'
 #38
 
 #Open file as read only to get ze datas:
-file_name = 'test{}.txt'.format(str(test_num))
+file_name = '5-11_data_collection/test{}.txt'.format(str(test_num))
 f = open(file_name, 'r')
 
 p=[] #array of pressure values
@@ -55,66 +60,105 @@ for line in f:
         az_value = float(az_value) * (5.0 / 1023.0)
         z_value = float(z_value)* (5.0 / 1023.0)
         sdx_value,sdy_value = sc_values.split('|')
-        print p_value
+#        print p_value
         p.append(p_value)
         az.append(az_value)
         z.append(z_value)
         sdx.append(sdx_value)
         sdy.append(sdy_value)
 
-#Pressure Plot!
-fig, ax1 = plt.subplots()
-ax1.plot(p[start_val:end_val], 'b', label='Pressure Sensor')
-ax1.set_xlabel('time (s)', size=18)
-# Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Pressure (mbar)', color='b', size=18)
-for tl in ax1.get_yticklabels():
-    tl.set_color('b')
+def compute_variances_pressure_sensor(p):
+    for i, value in enumerate(p):
+        p[i]=float(value)
+        
+    end_var_calc = time_window
+    start_var_calc = start_val
+    pres_var=[]
+    for i in range(start_val, end_val-time_window):
+        pres_var.append(np.var(p[start_var_calc:end_var_calc]))
+        start_var_calc = start_var_calc + 1
+        end_var_calc = end_var_calc + 1
+    return pres_var
+    
+
+plot_array=[]
+az_rectified=[]; az_tozero=[]
+for i in range(start_val,end_val):
+    plot_array.append(i)
+    
+m,b = np.polyfit(plot_array,az[start_val:end_val],1)
+
+for i, value in enumerate(az):
+    az[i]=float(value)
+    az_tozero.append(az[i]-b)
+    az_rectified.append(abs(az[i]-b))
+
+##plt.plot(az_tozero, 'r', linewidth=3.0, label='Acceleration, normalized about 0')
+##plt.plot(az_rectified, 'y', linewidth=3.0, label='Acceleration normalized and rectified')
+##plt.legend()
+##plt.show()
+end_var_calc = time_window
+start_var_calc = start_val
+acclZ_val=[]
+for i in range(start_val, end_val-time_window):
+    max_in_time_window = max(az[start_var_calc:end_var_calc])
+    acclZ_val.append(max_in_time_window)
+print 'average of rectified acceleration data, test {}: '.format(test_num), sum(az_rectified)/len(az_rectified)
 
 
-ax2 = ax1.twinx()
-ax2.plot(sdx[start_val:end_val], 'r', label='X Position')
-ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
-for tl in ax2.get_yticklabels():
-    tl.set_color('r')
-plt.title('Pressure'+mode, fontsize=25)
-plt.show()
+###Pressure Plot!
+##fig, ax1 = plt.subplots()
+##ax1.plot(p[start_val:end_val], 'b', label='Pressure Sensor')
+##ax1.set_xlabel('time (s)', size=18)
+### Make the y-axis label and tick labels match the line color.
+##ax1.set_ylabel('Pressure (mbar)', color='b', size=18)
+##for tl in ax1.get_yticklabels():
+##    tl.set_color('b')
 
 
-#Acceleration Plot!!
-fig2, ax1 = plt.subplots()
-ax1.plot(az[start_val:end_val], 'g')
-ax1.set_xlabel('time (s)', size=18)
-# Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Z Axis Acceleration (V)', color='g', size=18)
-for tl in ax1.get_yticklabels():
-    tl.set_color('g')
+##ax2 = ax1.twinx()
+##ax2.plot(sdx[start_val:end_val], 'r', label='X Position')
+##ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
+##for tl in ax2.get_yticklabels():
+##    tl.set_color('r')
+##plt.title('Pressure'+mode, fontsize=25)
+##plt.show()
 
 
-ax2 = ax1.twinx()
-ax2.plot(sdx[start_val:end_val], 'r')
-ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
-for tl in ax2.get_yticklabels():
-    tl.set_color('r')
-plt.title('Acceleration'+mode, fontsize=25)
-plt.show()
-
-#Vibration Plot!!
-fig3, ax1 = plt.subplots()
-ax1.plot(z[start_val:end_val], 'm')
-ax1.set_xlabel('time (s)', size=18)
-# Make the y-axis label and tick labels match the line color.
-ax1.set_ylabel('Vibration (V)', color='m', size=18)
-for tl in ax1.get_yticklabels():
-    tl.set_color('m')
+###Acceleration Plot!!
+##fig2, ax1 = plt.subplots()
+##ax1.plot(az[start_val:end_val], 'g')
+##ax1.set_xlabel('time (s)', size=18)
+### Make the y-axis label and tick labels match the line color.
+##ax1.set_ylabel('Z Axis Acceleration (V)', color='g', size=18)
+##for tl in ax1.get_yticklabels():
+##    tl.set_color('g')
 
 
-ax2 = ax1.twinx()
-ax2.plot(sdx[start_val:end_val], 'r')
-ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
-for tl in ax2.get_yticklabels():
-    tl.set_color('r')
-plt.title('Vibration'+mode, fontsize=25)
-plt.show()
+##ax2 = ax1.twinx()
+##ax2.plot(sdx[start_val:end_val], 'r')
+##ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
+##for tl in ax2.get_yticklabels():
+##    tl.set_color('r')
+##plt.title('Acceleration'+mode, fontsize=25)
+##plt.show()
+
+###Vibration Plot!!
+##fig3, ax1 = plt.subplots()
+##ax1.plot(z[start_val:end_val], 'm')
+##ax1.set_xlabel('time (s)', size=18)
+### Make the y-axis label and tick labels match the line color.
+##ax1.set_ylabel('Vibration (V)', color='m', size=18)
+##for tl in ax1.get_yticklabels():
+##    tl.set_color('m')
+
+
+##ax2 = ax1.twinx()
+##ax2.plot(sdx[start_val:end_val], 'r')
+##ax2.set_ylabel('Point X Position (pixels)', color='r', size=18)
+##for tl in ax2.get_yticklabels():
+##    tl.set_color('r')
+##plt.title('Vibration'+mode, fontsize=25)
+##plt.show()
 
 
