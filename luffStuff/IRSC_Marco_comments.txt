@@ -1,0 +1,9 @@
+Ehy Halie, don't take these comments as ''personal'' or rude, I just wrote things that came into my mind while I was reading it ... keep on the excellent work ;)
+
+1) Reading senors: have you considered using wheatstone bridge (if you use two sensors of the same kind)?
+
+2) Plots: after reading the papaer, maybe (again, maybe) I would have put in the same plot the same measurements, taken from the two differente case of study. (ask me if this sentence is not clear, as it is likely)
+
+3) Fig 11 : I think it's quite a mess. Male people can barely recognize 7 colors, and if you put two shades of purple in the same plot and I print it to read it on a real piece of paper, I would probably print it in black&white ... I would split the main plot in subplots, forexaple as done in Matlab using the subplot() function ...
+    4 vertically stacked subplots
+

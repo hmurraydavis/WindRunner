@@ -3,7 +3,7 @@ import numpy as np
 import pprint
 
 def make_image_mask(img):
-    img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
     ret,thresh = cv2.threshold(img,80,255,cv2.THRESH_BINARY)
     return thresh
 
@@ -27,15 +27,16 @@ ramp_frames = 30
  
 #### Now we can initialize the camera capture object with the cv2.VideoCapture class.
 #### All it needs is the index to a camera port.
-camera_side = cv2.VideoCapture(camera_side)
-camera_back = cv2.VideoCapture(camera_back)
+###camera_side = cv2.VideoCapture(camera_side)
+###camera_back = cv2.VideoCapture(camera_back)
 
-while(True):
+def get_circle(cam):
+    camera_side = cv2.VideoCapture(cam)
     ret, frame = camera_side.read()
+    
     side_mask = make_image_mask(frame)
     contours, hierarchy = cv2.findContours(side_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-#    img = cv2.drawContours(thresh, contours, -1, (0,255,0), 3) 
-
+    
     cnt = contours[0]
     (x,y),radius = cv2.minEnclosingCircle(cnt)
     center = (int(x),int(y))
@@ -44,8 +45,29 @@ while(True):
     cat = cv2.circle(frame,center,radius,(0,255,0),5)
     cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        exit()
+    camera_side.release()
+    cv2.destroyAllWindows()
+    return (x,y), radius
 
-# When everything done, release the capture
-camera_side.release()
-cv2.destroyAllWindows()
+
+get_circle(camera_side)
+###while(True):
+###    ret, frame = camera_side.read()
+###    side_mask = make_image_mask(frame)
+###    contours, hierarchy = cv2.findContours(side_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+####    img = cv2.drawContours(thresh, contours, -1, (0,255,0), 3) 
+
+###    cnt = contours[0]
+###    (x,y),radius = cv2.minEnclosingCircle(cnt)
+###    center = (int(x),int(y))
+###    radius = int(radius)
+###    print 'center: ', center, 'radius: ', radius
+###    cat = cv2.circle(frame,center,radius,(0,255,0),5)
+###    cv2.imshow('frame',frame)
+###    if cv2.waitKey(1) & 0xFF == ord('q'):
+###        break
+
+#### When everything done, release the capture
+###camera_side.release()
+###cv2.destroyAllWindows()

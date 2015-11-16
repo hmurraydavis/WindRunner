@@ -14,6 +14,8 @@ mode=' Sensor Data, Sail Holding Shape'
 luffing_tests=[10,11,12,13,24,25,26,27,28] #TODO: fix test 23
 holding_shape_tests = [15,16,17,18,19,20,21,22,23]
 
+vibrawdata=[]
+
 #Test 1 -- NA
 #Test 2 -- luffing
 #Test 3 -- holding shape
@@ -41,7 +43,7 @@ holding_shape_tests = [15,16,17,18,19,20,21,22,23]
 #all three holding, luffing, and holding
 #38
 
-def read_test_data_from_file():
+def read_test_data_from_file(test_num):
     #Open file as read only to get ze datas:
     file_name = '5-11_data_collection/test{}.txt'.format(str(test_num))
     f = open(file_name, 'r')
@@ -79,10 +81,11 @@ def compute_pressure_statistics(p):
     start_var_calc = start_val
     pres_var=[]
     for i in range(start_val, end_val-time_window):
-        pres_var.append(np.var(p[start_var_calc:end_var_calc]))
+        pres_var.append(np.var(p[ start_var_calc:end_var_calc]))
         start_var_calc = start_var_calc + 1
         end_var_calc = end_var_calc + 1
-#    print 'Average of pressure varience, test {}'.format(test_num), sum(pres_var)/len(pres_var)
+#    print 'Average of pressure 
+#ence, test {}'.format(test_num), sum(pres_var)/len(pres_var)
     return sum(pres_var)/len(pres_var)
 
 
@@ -115,7 +118,7 @@ def compute_acceleration_statistics(az):
     accl_max_avg = sum(acclZ_val)/len(acclZ_val)
 #    print 'average of rectified acceleration data, test {}: '.format(test_num), accl_rect_avg
 #    print 'average of max val in time interval, test {}: '.format(test_num), accl_max_avg
-    return accl_rect_avg, accl_max_avg
+    return accl_rect_avg, accl_max_avg, acclZ_val
 
 
 def compute_piezo_statistics(z): 
@@ -125,6 +128,14 @@ def compute_piezo_statistics(z):
     for i in range(start_val,end_val):
         plot_array.append(i)
     m,b = np.polyfit(plot_array,z[start_val:end_val],1)
+##    z=np.array(z)
+##    print 'z'
+##    zn = m*z+b
+##    print z, '\n \n'
+##    print zn
+##    plt.plot(z)
+##    plt.plot(zn, 'r')
+##    plt.show()
     for i,value in enumerate(z):
         z[i]=float(z[i])
         z_tozero.append(z[i]-b)
@@ -135,6 +146,7 @@ def compute_piezo_statistics(z):
         start_var_calc=start_var_calc+1
         z_max_vals.append(max_in_time_window)
     
+    
     pez_rect_avg = sum(z_rectified)/len(z_rectified)
     pez_max_avg = sum(z_max_vals)/len(z_max_vals)
 #    print 'Average rectified piezo data, test {}: '.format(test_num), pez_rect_avg
@@ -143,11 +155,13 @@ def compute_piezo_statistics(z):
     return pez_rect_avg, pez_max_avg
     
 def avg_and_append(array):
-    return array.append(sum(array[1:])/len(array[1:]))
+    array.append(sum(array[1:])/len(array[1:]))
+    return sum(array[1:])/len(array[1:])
 
 
 def make_data_table(test_set):
-    trial_num=['']
+    decimalVal = 3
+    trial_num=['Trial: ']
     ms_rect_avg = ['Minisense 100 Rectified Average']
     ms_av_max = ['Minisense 100 Average of Maxes']
     adxl_rectified_avg = ['ADXL 335 Rectified Average']
@@ -157,9 +171,9 @@ def make_data_table(test_set):
         global test_num
         test_num = trial
     #    print 'trial: ', trial
-        p, az, z = read_test_data_from_file()
+        p, az, z = read_test_data_from_file(trial)
         pres = compute_pressure_statistics(p)
-        accl_rect_avg, accl_max_avg = compute_acceleration_statistics(az)
+        accl_rect_avg, accl_max_avg, acclZ_val = compute_acceleration_statistics(az)
         pez_rect_avg, pez_max_avg = compute_piezo_statistics(z)
     #    print '\n'
         trial_num.append(trial)
@@ -169,18 +183,40 @@ def make_data_table(test_set):
         ms_rect_avg.append(pez_rect_avg)
         ms_av_max.append(pez_max_avg)
         
-    print bmp_var
     table = [ms_rect_avg, ms_av_max, adxl_rectified_avg, adxl_av_max, bmp_var]
+#    avg_all_trials = []; std_all_trials = []
     for array in table:
-        avg_and_append(array)
-    trial_num.append('Average')
+        avg_all_trials=avg_and_append(array) #tack mean of each trial to end
+#         = sum(array[1:])/len(array[1:])
+#         = array[1:-1])
+        print len(array[1:len(array)]), '   ', array
+        array.append(np.std(array[1:-1]))
+        std_all_trials = np.std(array[1:-1])
+        for index,element in enumerate(array):
+            if (array[0] == 'BMP 180 Average Variance ($x10^{2}$)') and isinstance(element, np.float64):
+                element = element *100
+#                print type(element)
+                array[index] = '{0:.2f}'.format(float(element))
+            elif (type(element) is float) or isinstance(element, np.float64):
+                array[index] = '{0:.2f}'.format(float(element))
+    trial_num.append('Mean')
+    trial_num.append('STD')
     table = [trial_num, ms_rect_avg, ms_av_max, adxl_rectified_avg, adxl_av_max, bmp_var]    
-    print tabulate(table, tablefmt='grid')
+    #print tabulate(table, tablefmt='latex') #grid
+    return avg_all_trials, std_all_trials
 
-print 'lffing: '
-make_data_table(luffing_tests)
-print 'Holding shape: '
-make_data_table(holding_shape_tests)
+#p, az, z = read_test_data_from_file(24)
+#compute_piezo_statistics(z)
+###########print 'lffing: '
+###########print'\n'
+#make_data_table(luffing_tests)
+###########print '\n'
+###########print 'Holding shape: '
+###########print '\n'
+holding_shape_avgs, holding_shape_stds = make_data_table(holding_shape_tests)
+luffing_avgs, luffing_stds = make_data_table(luffing_tests)
+
+print holding_shape_avgs, holding_shape_stds
 
 ###Pressure Plot!
 ##fig, ax1 = plt.subplots()
