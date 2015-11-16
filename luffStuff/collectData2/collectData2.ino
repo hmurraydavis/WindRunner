@@ -82,12 +82,13 @@ void setup()
 
 void loop()
 {
-  double a,P, Az;
+  double a,P, Az, Z;
   
   // Get a new pressure reading:
 
   P = getPressure();
   Az = analogRead(A3);
+  Z = analogRead(A2);
 
   // Show the relative altitude difference between
   // the new reading and the baseline reading:
@@ -105,9 +106,13 @@ void loop()
   delay(500);*/
   Serial.print("$P:");
   Serial.print(P);
-  Serial.print(",");
+  Serial.print(" ");
   Serial.print("Az:");
   Serial.print(Az);
+  Serial.print(" ");
+  Serial.print("Z:");
+  Serial.print(Z);
+//  Serial.print(" ");
   Serial.println();
 }
 
